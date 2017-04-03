@@ -1,41 +1,75 @@
 <App>
     <Text ux:Class="Header" FontSize="28" Color="White" TextAlignment="Center"/>
-  
+
     <DockPanel>
         <StatusBarBackground Dock="Top"/>
         <BottomBarBackground Dock="Bottom" IncludesKeyboard="false"/>
 
         <Panel Color="Black" Height="100%" Width="100%" Layer="Underlay"/>
+        <Image File="Assets/background.jpg" Alignment="Center" StretchMode="UniformToFill" Opacity="0.5" Layer="Background"/>
         <!-- Pagecontrol -->
         <JavaScript File="MainView.js" />
         <Router ux:Name="router" />
-        <Navigator ux:Name="Navigator" DefaultTemplate="index" Transition="Standard">
-            <Page ux:Template="index">
-                <Index />
+        <Navigator ux:Name="Navigator" DefaultTemplate="login" Transition="Standard">
+            <Page ux:Template="login">
+                <login />
             </Page>
-            <Page ux:Template="page1">
-                <page1 />
+            <Page ux:Template="addTrip">
+                <addTrip />
+            </Page>
+            <Page ux:Template="settings">
+                <settings />
+            </Page>
+             <Page ux:Template="logbook">
+                <logbook />
                 <WhileActive>
-                    <Change Target="page1Button.Color" Value="#332562"/>
+                    <Change Target="logbookButton.Color" Value="#332562"/>
                 </WhileActive>
             </Page>
-            <Page ux:Template="page2">
-                <page2 />
+              <Page ux:Template="logbookEntry">
+                <logbookEntry />
                 <WhileActive>
-                    <Change Target="page2Button.Color" Value="#332562"/>
+                    <Change Target="logbookButton.Color" Value="#332562"/>
+                </WhileActive>
+            </Page>
+             <Page ux:Template="statistics">
+                <statistics />
+                <WhileActive>
+                    <Change Target="statisticsButton.Color" Value="#332562"/>
+                </WhileActive>
+            </Page>
+             <Page ux:Template="ranking">
+                <ranking />
+                <WhileActive>
+                    <Change Target="rankingButton.Color" Value="#332562"/>
                 </WhileActive>
             </Page>
         </Navigator>
-        <!-- BottomBar Navigation -->
-        <Grid Columns="1*,1*" Height="45" Dock="Bottom" Padding="0, 1, 0, 0">
+         <!-- TopBar Navigation -->
+        <Grid Columns="1*,1*" Height="45" Dock="Top" Padding="0, 1, 0, 0">
             <Rectangle Layer="Background">
-                <Stroke Width="1" Color="#000000"/>
+                <Stroke Width="1" Color="#FFFFFF"/>
             </Rectangle>
             <Panel Background="White">
-                <Icon ux:Name="page1Button" Color="Gray" Width="40%" File="Assets/page1.png" Clicked="{gotoPage1}"/>
+                <Image ux:Name="addTripButton" Alignment="Left" Color="Gray" Width="20%" Height="70%" File="Assets/add.png" Clicked="{gotoAddTrip}" />
             </Panel>
             <Panel Background="White">
-                <Icon ux:Name="page2Button" Color="Gray" Width="40%" File="Assets/page2.png" Clicked="{gotoPage2}"/>
+                <Image ux:Name="settingsButton"  Alignment="Right" Color="Gray" Width="20%" Height="70%" File="Assets/settings.png" Clicked="{gotoSettings}"/>
+            </Panel>
+        </Grid>
+        <!-- BottomBar Navigation -->
+        <Grid Columns="1*,1*,1*" Height="45" Dock="Bottom" Padding="0, 1, 0, 0">
+            <Rectangle Layer="Background">
+                <Stroke Width="1" Color="#FFFFFF"/>
+            </Rectangle>
+            <Panel Background="White">
+                <Image ux:Name="logbookButton" Color="Gray" Width="40%" Height="80%" File="Assets/logbook.png" Clicked="{gotoLogbook}"/>
+            </Panel>
+            <Panel Background="White">
+                <Image ux:Name="statisticsButton" Color="Gray" Width="40%" Height="70%" File="Assets/statistics.png" Clicked="{gotoStatistics}"/>
+            </Panel>
+            <Panel Background="White">
+                <Image ux:Name="rankingButton" Color="Gray" Width="40%" Height="80%" File="Assets/trophy.png" Clicked="{gotoRanking}"/>
             </Panel>
         </Grid>
     </DockPanel>

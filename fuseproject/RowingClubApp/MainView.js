@@ -4,10 +4,14 @@
 module.exports = {
         //Navigation
         gotoIndex: function() {router.push("index");},
-        gotoPage1: function() {router.push("page1");},
-        gotoPage2: function() {router.push("page2");},
+        gotoAddTrip: function() {router.push("addTrip");},
+        gotoSettings: function() {router.push("settings");},
+        gotoLogbook: function() {router.push("logbook");},
+        gotoStatistics: function() {router.push("statistics");},
+        gotoRanking: function() {router.push("ranking");},
         goBack: function() { router.goBack();},
         sampleFunction: function() {sampleFunction();},
+        detailEntry: function() {router.push("logbookEntry");}
 };
 
 // Start of JavaScript functions (need to be added to module.export to use)

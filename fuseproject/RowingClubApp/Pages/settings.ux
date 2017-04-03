@@ -1,7 +1,7 @@
-<Page ux:Class="page2">
+<Page ux:Class="settings">
 	<ScrollView>
 		<StackPanel Layer="Overlay">
-			<Header Margin="0, 10, 0, 10">Page 2</Header>
+			<Header Margin="0, 10, 0, 10">Settings</Header>
 			<Panel>
 				<Text Margin="30,10,30,0" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" TextColor="White">
 					Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
