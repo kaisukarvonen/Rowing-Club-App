@@ -2,21 +2,18 @@
 	<ScrollView>
 		<StackPanel Layer="Overlay">
 			<Header Margin="0, 10, 0, 10">Add Trip</Header>
-			<Panel>
-				<Text Margin="30,10,30,0" FontSize="14" TextWrapping="Wrap" TextAlignment="Center">
-					Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-				</Text>
-			</Panel>
-			<Panel>
-				<Text Margin="30,10,30,0" FontSize="14" TextWrapping="Wrap" TextAlignment="Center">
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-				</Text>
-			</Panel>
-			<Panel Margin="20,40,20,0" Clicked="{gotoIndex}">
-				<Text Value="Show Start Page" TextColor="White" Alignment="Center"/>
+			<Panel Margin="20,40,20,0" Clicked="{recordTrip}">
+				<Text Value="Start trip" TextColor="White" Alignment="Center"/>
 				<Rectangle CornerRadius="4" Layer="Background" Color="#25a" Height="40"/>
 			</Panel>
-			<Panel Margin="50, 0, 0, 0" Height="100"/>
+			<Panel Margin="20,40,20,0" Clicked="{stopContinuousListener}">
+				<Text Value="Stop trip" TextColor="White" Alignment="Center"/>
+				<Rectangle CornerRadius="4" Layer="Background" Color="#25a" Height="40"/>
+			</Panel>
+			<Panel>
+				<Text TextColor="White" Margin="20, 30, 0, 0">Location (reloads every 10 seconds):</Text>
+				<Text TextColor="White" Margin="20, 30, 0, 0" Value="{continuousLocation}" />
+			</Panel>
 		</StackPanel>
 	</ScrollView>
 </Page>
