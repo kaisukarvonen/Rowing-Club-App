@@ -8,7 +8,9 @@
         <Panel Color="Black" Height="100%" Width="100%" Layer="Underlay"/>
         <Image File="Assets/background.jpg" Alignment="Center" StretchMode="UniformToFill" Opacity="0.5" Layer="Background"/>
         <!-- Pagecontrol -->
+        <JavaScript File="Login.js" ux:Global="Login" />
         <JavaScript File="MainView.js" />
+
         <Router ux:Name="router" />
         <Navigator ux:Name="Navigator" DefaultTemplate="login" Transition="Standard">
             <Page ux:Template="login">

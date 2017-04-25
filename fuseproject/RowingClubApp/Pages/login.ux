@@ -1,35 +1,35 @@
 <Page ux:Class="login">
 	<ScrollView>
 		<StackPanel Layer="Overlay">
-			<Header Margin="0, 10, 0, 10" FontSize="45">Login</Header>
-			<Panel Margin="30,40,30,0">
-					<!-- 
-					<TextInput ux:Class="LoginInput" PlaceholderColor="#ddd" Padding="4" CaretColor="#ddd" TextColor="#ddd"></TextInput>
+			<Header Margin="0, 10, 0, 0" FontSize="45">Login</Header>
 
+			<Panel ux:Name="errorPopup" Margin="30,20,30,0" Width="200" Height="20" Opacity="0">
+				   <Text Value="{errorMessage}"  TextColor="#000" FontSize="17"/>
+			</Panel>
+			<Panel Margin="30,0,30,0">
 
-					<StackPanel Margin="15" ItemSpacing="20">
-					    <LoginInput PlaceholderText="Username" />
-					    <LoginInput PlaceholderText="Password" IsPassword="true" />
-				    </StackPanel>
-				    -->
+					
+					<WhileTrue Value="{errorPopup_visible}">
+    					<Change errorPopup.Opacity="1" Duration="0.5" />
+					</WhileTrue>
 
 				    <Grid ux:Name="loginArea" Row="1" Padding="0,10" RowCount="2" Columns="auto,1*" Height="170" MaxWidth="400">
 
 						<Image Row="0" Column="0" File=".../Assets/user_icon.png" Width="20" Height="20" Margin="10,0,20,0" Alignment="Left"/>
-						<TextInput Row="0" Column="1" PlaceholderText="Username" PlaceholderColor="#999" TextColor="#fff" CaretColor="#fff" />
+						<TextInput Row="0" Column="1" PlaceholderText="Username" PlaceholderColor="#aaa" TextColor="#ddd" CaretColor="#fff" Value="{username}"/>
 						<Rectangle Row="0" Column="0" Alignment="Bottom" ColumnSpan="2" Height="1" Color="#fff" Margin="0,0,0,12"/>
 
 						<Image Row="1" Column="0" File=".../Assets/password_icon.png" Width="20" Height="20" Margin="10,0,20,0" Alignment="Left"/>
-						<TextInput Row="1" Column="1" PlaceholderText="Password" PlaceholderColor="#999" TextColor="#fff" CaretColor="#fff" IsPassword="true"/>
+						<TextInput Row="1" Column="1" PlaceholderText="Password" PlaceholderColor="#aaa" TextColor="#fff" CaretColor="#fff" IsPassword="true" Value="{password}"/>
 						<Rectangle Row="1" Column="0" Alignment="Bottom" ColumnSpan="2" Height="1" Color="#fff" Margin="0,0,0,12"/>
 					</Grid>
 
 				
 			</Panel>
-			<Panel Margin="20,20,20,0" Clicked="{login}">
-				<Text Value="Login" TextColor="White" Alignment="Center"/>
+			<Button Clicked="{login}" Margin="20,20,20,0" Text="Login"> </Button>
+				<!--<Text Value="Login" TextColor="White" Alignment="Center"/>
 				<Rectangle CornerRadius="4" Layer="Background" Color="#25a" Height="40"/>
-			</Panel>
+			</Panel>-->
 			<Panel Margin="50, 0, 0, 0" Height="100"/>
 		</StackPanel>
 	</ScrollView>
