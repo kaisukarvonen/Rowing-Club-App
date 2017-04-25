@@ -1,13 +1,32 @@
 <Page ux:Class="login">
 	<ScrollView>
 		<StackPanel Layer="Overlay">
-			<Header Margin="0, 10, 0, 10">Login</Header>
-			<Panel>
-				<Text Margin="30,10,30,0" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" TextColor="White">
-					Login Here
-				</Text>
+			<Header Margin="0, 10, 0, 10" FontSize="45">Login</Header>
+			<Panel Margin="30,40,30,0">
+					<!-- 
+					<TextInput ux:Class="LoginInput" PlaceholderColor="#ddd" Padding="4" CaretColor="#ddd" TextColor="#ddd"></TextInput>
+
+
+					<StackPanel Margin="15" ItemSpacing="20">
+					    <LoginInput PlaceholderText="Username" />
+					    <LoginInput PlaceholderText="Password" IsPassword="true" />
+				    </StackPanel>
+				    -->
+
+				    <Grid ux:Name="loginArea" Row="1" Padding="0,10" RowCount="2" Columns="auto,1*" Height="170" MaxWidth="400">
+
+						<Image Row="0" Column="0" File=".../Assets/user_icon.png" Width="20" Height="20" Margin="10,0,20,0" Alignment="Left"/>
+						<TextInput Row="0" Column="1" PlaceholderText="Username" PlaceholderColor="#999" TextColor="#fff" CaretColor="#fff" />
+						<Rectangle Row="0" Column="0" Alignment="Bottom" ColumnSpan="2" Height="1" Color="#fff" Margin="0,0,0,12"/>
+
+						<Image Row="1" Column="0" File=".../Assets/password_icon.png" Width="20" Height="20" Margin="10,0,20,0" Alignment="Left"/>
+						<TextInput Row="1" Column="1" PlaceholderText="Password" PlaceholderColor="#999" TextColor="#fff" CaretColor="#fff" IsPassword="true"/>
+						<Rectangle Row="1" Column="0" Alignment="Bottom" ColumnSpan="2" Height="1" Color="#fff" Margin="0,0,0,12"/>
+					</Grid>
+
+				
 			</Panel>
-			<Panel Margin="20,40,20,0" Clicked="{gotoLogbook}">
+			<Panel Margin="20,20,20,0" Clicked="{login}">
 				<Text Value="Login" TextColor="White" Alignment="Center"/>
 				<Rectangle CornerRadius="4" Layer="Background" Color="#25a" Height="40"/>
 			</Panel>
