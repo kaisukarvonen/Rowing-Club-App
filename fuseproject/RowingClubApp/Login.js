@@ -9,6 +9,19 @@ var errorPopup = Observable(false);
 function login() {
 	if (inputIsValid(username.value, password.value)) {
 		console.log("valid fields"+ username.value + ", "+ password.value);
+	} else {
+		var user = {username: username.value, password: password.value};
+		console.log(user);
+
+		fetch('xxx/login_user.php', {
+        method: 'POST',
+        body: JSON.stringify(user)
+    }).then(function(response) {
+    	console.log("Successfull! status: "+ response.status);
+	}).then(function(responseObject) {
+		console.log(responseObject);
+	}).catch(error) {
+		console.log(error);
 	}
 }
 

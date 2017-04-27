@@ -6,8 +6,8 @@ var GeoLocation = require("FuseJS/GeoLocation");
 var t_data = new Observable(Login);
 console.log(JSON.stringify(t_data.value));*/
 
-var username = Observable("");
-var password = Observable("");
+var username = Observable();
+var password = Observable();
 var errorMessage = Observable("errorMessage");
 var errorPopup = Observable(false);
 
