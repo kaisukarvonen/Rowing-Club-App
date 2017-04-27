@@ -1,6 +1,7 @@
 //Requirements/Oberservables
 var Observable = require("FuseJS/Observable");
 var GeoLocation = require("FuseJS/GeoLocation");
+var Storage = require("FuseJS/Storage");
 
 /*var Login = require("Login");
 var t_data = new Observable(Login);
@@ -41,7 +42,37 @@ module.exports = {
 
 function login() {
 	if (inputIsValid(username.value, password.value)) {
-		//send to server
+		console.log("valid fields"+ username.value + ", "+ password.value);
+	} else {
+		var user = {username: username.value, password: password.value};
+		console.log(user);
+
+		fetch('xxx/login_user.php', {
+        method: 'POST',
+        headers: { "Content-type": "application/json"},
+        body: JSON.stringify(user)
+    }).then(function(response) {
+    	console.log("Successfull! status: "+ response.status);
+    	
+	}).then(function(responseObject) {
+		console.log(responseObject);
+		var success = Storage.writeSync("user_details.json", responseObject);
+			if(success) {
+			    //router.push("statistics");
+			}
+			else {
+			    errorMessage.value = "Error when logging in, please try again!";
+				errorPopup.value = true;
+			}
+	}).catch(error) {
+		console.log(error);
+		if (error.status == 401) {
+			errorMessage.value = "Username and password do not match!";
+			errorPopup.value = true;
+		} else {
+			errorMessage.value = "Error when logging in, please try again!";
+			errorPopup.value = true;
+		}
 	}
 }
 
