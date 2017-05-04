@@ -81,18 +81,16 @@ function login() {
 			    return response.json();    // This returns a promise
 		})
 			.then(function(responseObject) {
-			console.log("object:"+responseObject);
-			//var writeToFile = Storage.writeSync("user_details.json", responseObject);
-			/*	if(writeToFile) {
-				    //go to statistics page
-				}
-				else {
+				console.log("id:"+responseObject.id + ", username: "+responseObject.username);
+				var writeToFile = Storage.writeSync("user_details.json", responseObject);
+				if(writeToFile) {
+					router.push("statistics");
+				} else {
 					console.log("writeToFile error");
-				    errorMessage.value = "Error when logging in, please try again!";
+					errorMessage.value = "Error when logging in, please try again!";
 					errorPopup.value = true;
 				}
-			*/
-		
+				
 		})
 	}
 }
