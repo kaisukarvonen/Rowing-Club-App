@@ -3,22 +3,18 @@ require_once('/home/scocta5/bin/composer/vendor/autoload.php');
 
 use Zend\Config\Factory;
 
-/*$username=$_POST['username'];
-$password= sha1($_POST['password']);
-*/
-$json = file_get_contents('php://input');
-$obj = json_decode($json);
-echo "x ",$obj.username;
+$username = $_GET['user'];
+$password_clear = $_GET['pw'];
+
+$password = sha1($password_clear);
 
 
-/*$config = Factory::fromFile('config_rowing_club_db.php', true);
+$config = Factory::fromFile('config_rowing_club_db.php', true);
 
 $servername=$config->get("database")->get("servername");
 $dbusername=$config->get("database")->get("username");
 $dbpassword=$config->get("database")->get("password");
 $dbname=$config->get("database")->get("dbname");
-
-
 
 
 try {
@@ -39,7 +35,7 @@ try {
    
 } catch (PDOException $e) {
    header('HTTP/1.0 500 Internal Server Error');
-}*/
+}
 
 
 ?>
