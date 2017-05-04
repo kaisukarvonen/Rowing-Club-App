@@ -42,43 +42,64 @@ module.exports = {
 
 function login() {
 	if (inputIsValid(username.value, password.value)) {
-		console.log("valid fields"+ username.value + ", "+ password.value);
-	} else {
-		var user = {username: username.value, password: password.value};
-		console.log(user);
+			var user = {"username": username.value, "password": password.value};
+			console.log("username: "+user.username + " password: "+user.password);
+			errorPopup.value = false;
+			var jsonUser = JSON.stringify(user);
 
-		fetch('xxx/login_user.php', {
-        method: 'POST',
-        headers: { "Content-type": "application/json"},
-        body: JSON.stringify(user)
-    }).then(function(response) {
-    	console.log("Successfull! status: "+ response.status);
-    	
-	}).then(function(responseObject) {
-		console.log(responseObject);
-		var success = Storage.writeSync("user_details.json", responseObject);
-			if(success) {
-			    //router.push("statistics");
+			/*var xhr = new XMLHttpRequest();
+			var params = "username=x";
+			xhr.open("POST", "http://www.scoctail.com/rowing_club/login_user.php" , true);
+			xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xhr.onreadystatechange = function() {
+			  if (xhr.readyState == 4) {
+			    // JSON.parse does not evaluate the attacker's scripts.
+			    var resp = JSON.parse(xhr.responseText);
+			    //console.log(resp.status);
+			  }
 			}
-			else {
-			    errorMessage.value = "Error when logging in, please try again!";
-				errorPopup.value = true;
-			}
-	}).catch(error) {
-		console.log(error);
-		if (error.status == 401) {
-			errorMessage.value = "Username and password do not match!";
-			errorPopup.value = true;
-		} else {
-			errorMessage.value = "Error when logging in, please try again!";
-			errorPopup.value = true;
-		}
+			xhr.send(params);*/
+
+
+			fetch('http://www.scoctail.com/rowing_club/login_user.php?user='+username.value+
+				'&pw='+password.value, {
+	        method: 'GET'
+	    })
+			.then(function(response) {
+			    status = response.status;  // Get the HTTP status code
+			    console.log(status);
+			    
+			    if (!response.ok) {
+			    	if (status == 401) {
+					errorMessage.value = "Username and password do not match!";
+					errorPopup.value = true;
+					} else {
+						errorMessage.value = "Error when logging in, please try again!";
+						errorPopup.value = true;
+					}
+			    }
+			    return response.json();    // This returns a promise
+		})
+			.then(function(responseObject) {
+			console.log("object:"+responseObject);
+			//var writeToFile = Storage.writeSync("user_details.json", responseObject);
+			/*	if(writeToFile) {
+				    //go to statistics page
+				}
+				else {
+					console.log("writeToFile error");
+				    errorMessage.value = "Error when logging in, please try again!";
+					errorPopup.value = true;
+				}
+			*/
+		
+		})
 	}
 }
 
 
 function inputIsValid(username, password) {
-	if (username == "" || password == "") {
+	if (!username || !password) {
 		errorMessage.value = "Please fill out all fields!"
 		errorPopup.value = true;
 		return false;
