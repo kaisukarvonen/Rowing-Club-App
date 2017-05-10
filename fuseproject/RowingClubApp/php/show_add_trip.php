@@ -17,10 +17,10 @@ try {
    $connection = new PDO("mysql:host=$servername;dbname=$dbname", $dbusername, $dbpassword);
    $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-   $stmt_user= $connection->prepare('SELECT firstname, lastname FROM User WHERE club_id=:clubId');
+   $stmt_user= $connection->prepare('SELECT id, firstname, lastname FROM User WHERE club_id=:clubId');
    $stmt_user->bindParam(':clubId', $clubId);
 
-   $stmt_boat= $connection->prepare('SELECT name FROM Boat WHERE club_id=:clubId');
+   $stmt_boat= $connection->prepare('SELECT id, name FROM Boat WHERE club_id=:clubId');
    $stmt_boat->bindParam(':clubId', $clubId);
 
    $stmt_user->execute();

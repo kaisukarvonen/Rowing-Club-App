@@ -1,9 +1,9 @@
-<Page ux:Class="addTrip">
+<Page ux:Class="addTrip" Activated="{addTripPageActivated}">
 	<ScrollView>
 		<StackPanel Layer="Overlay">
 			<Header Margin="0, 10, 0, 10">Add Trip</Header>
 
-			<!--<Panel Width="100" Margin="30,20,190,0">
+			<Panel Width="100" Margin="30,20,190,0">
 				<Text TextColor="White">Past trip</Text>
 			
 				<Switch ux:Name="_sw" Margin="220,0,0,0">
@@ -13,16 +13,17 @@
 	    		</Switch>
     		</Panel>
 
-    		<Panel Width="100" Margin="20,25,190,0">
+    		
+    		<Panel Width="100" Margin="30,25,190,0">
 				<Text TextColor="#fff">Date</Text>
-			    <Text ux:Name="date" PlaceholderText="{CurrentDate}" PlaceholderColor="#444" Height="35" Padding="5" Width="120" Margin="200,0,0,0">
+			    <TextInput ux:Name="date" PlaceholderText="{currentDate}" PlaceholderColor="#ccc" Height="35" Padding="13,3,3,3" Width="110" Margin="200,0,0,0" IsEnabled="false" Alignment="Center">
 			        <Rectangle Layer="Background" Color="#999" CornerRadius="4">
 			            <Stroke Width="2" Brush="#BBB" />
 			        </Rectangle>
 			    </TextInput>
 				
     		</Panel>
-
+    			<!--
       		<Panel Width="100" Margin="20,25,190,0">
 				<Text TextColor="#fff">Boat</Text>
 			    <TextInput ux:Name="boat" PlaceholderText="Choose boat ▼" PlaceholderColor="#444" Height="35" Padding="5" Width="120" Margin="200,0,0,0">

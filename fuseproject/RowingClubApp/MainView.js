@@ -34,6 +34,7 @@ module.exports = {
         errorMessage: errorMessage,
         login: login,
         currentDate: currentDate,
+        addTripPageActivated: onAddTripPage,
         //Other functions and variables
         sampleFunction: sampleFunction,
         continuousLocation: continuousLocation,
@@ -41,6 +42,10 @@ module.exports = {
         stopContinuousListener: stopContinuousListener,
         recordTrip: recordTrip
 };
+
+function onAddTripPage() {
+	showCurrentDateonAddTrip(currentDate);
+}
 
 function showAddTrip() {
 
@@ -61,9 +66,12 @@ function showAddTrip() {
 				return response.json();
 		})
 			.then(function(responseObject) {
-				//responseObject.User[x].firstname
-				//responseObject.User[x].lastname
-				console.log(responseObject.Boats[0].name);
+				//console.log(JSON.stringify(responseObject.Boats));
+				if (Storage.writeSync("all_users.json", JSON.stringify(responseObject.Users)) &&
+				Storage.writeSync("all_boats.json", JSON.stringify(responseObject.Boats))) {
+					console.log("write to file successfull");
+				}
+
 		})
 	} else {
 		console.log("Error getting user details from file");
@@ -72,9 +80,11 @@ function showAddTrip() {
 
 
 
+
 function showCurrentDateonAddTrip(object) {
-	var time = new Date();
-	currentDate.value = "plaa";
+	var date = new Date();
+	var dateString = date.getDate()+"."+(date.getMonth()+1)+"."+date.getFullYear();
+	object.value = dateString;
 }
 
 
