@@ -2,6 +2,47 @@
 	<ScrollView>
 		<StackPanel Layer="Overlay">
 			<Header Margin="0, 10, 0, 10">Add Trip</Header>
+
+			<!--<Panel Width="100" Margin="30,20,190,0">
+				<Text TextColor="White">Past trip</Text>
+			
+				<Switch ux:Name="_sw" Margin="220,0,0,0">
+			        <WhileTrue Value="{ReadProperty _sw.Value}">
+			            <DebugAction Message="Switch.Value = true" />
+			        </WhileTrue>
+	    		</Switch>
+    		</Panel>
+
+    		<Panel Width="100" Margin="20,25,190,0">
+				<Text TextColor="#fff">Date</Text>
+			    <Text ux:Name="date" PlaceholderText="{CurrentDate}" PlaceholderColor="#444" Height="35" Padding="5" Width="120" Margin="200,0,0,0">
+			        <Rectangle Layer="Background" Color="#999" CornerRadius="4">
+			            <Stroke Width="2" Brush="#BBB" />
+			        </Rectangle>
+			    </TextInput>
+				
+    		</Panel>
+
+      		<Panel Width="100" Margin="20,25,190,0">
+				<Text TextColor="#fff">Boat</Text>
+			    <TextInput ux:Name="boat" PlaceholderText="Choose boat ▼" PlaceholderColor="#444" Height="35" Padding="5" Width="120" Margin="200,0,0,0">
+			        <Rectangle Layer="Background" Color="#999" CornerRadius="4">
+			            <Stroke Width="2" Brush="#BBB" />
+			        </Rectangle>
+			    </TextInput>
+				
+    		</Panel>
+
+    		<Panel Width="100" Margin="20,25,190,0">
+				<Text TextColor="#fff">Participants</Text>
+			    <TextInput ux:Name="dahte" PlaceholderText="cuxg" PlaceholderColor="#444" Height="35" Padding="5" Width="120" Margin="200,0,0,0">
+			        <Rectangle Layer="Background" Color="#999" CornerRadius="4">
+			            <Stroke Width="2" Brush="#BBB" />
+			        </Rectangle>
+			    </TextInput>
+				
+    		</Panel>-->
+
 			<Panel Margin="20,40,20,0" Clicked="{recordTrip}">
 				<Text Value="Start trip" TextColor="White" Alignment="Center"/>
 				<Rectangle CornerRadius="4" Layer="Background" Color="#25a" Height="40"/>

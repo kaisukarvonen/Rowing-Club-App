@@ -3,11 +3,7 @@ require_once('/home/scocta5/bin/composer/vendor/autoload.php');
 
 use Zend\Config\Factory;
 
-$username = $_GET['user'];
-$password_clear = $_GET['pw'];
-
-$password = sha1($password_clear);
-
+$clubId = $_GET['clubId'];
 
 $config = Factory::fromFile('config_rowing_club_db.php', true);
 
@@ -16,26 +12,33 @@ $dbusername=$config->get("database")->get("username");
 $dbpassword=$config->get("database")->get("password");
 $dbname=$config->get("database")->get("dbname");
 
-
 try {
+
    $connection = new PDO("mysql:host=$servername;dbname=$dbname", $dbusername, $dbpassword);
    $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-   $stmt= $connection->prepare('SELECT id, username, club_id FROM User WHERE username= :username AND password= :password');
-   $stmt->bindParam(':username', $username);
-   $stmt->bindParam(':password', $password); 
-   $stmt->execute();
-   $result=$stmt->fetch();
+   $stmt_user= $connection->prepare('SELECT firstname, lastname FROM User WHERE club_id=:clubId');
+   $stmt_user->bindParam(':clubId', $clubId);
+
+   $stmt_boat= $connection->prepare('SELECT name FROM Boat WHERE club_id=:clubId');
+   $stmt_boat->bindParam(':clubId', $clubId);
+
+   $stmt_user->execute();
+   $stmt_boat->execute();
+
+   $user_result =$stmt_user->fetchAll(PDO::FETCH_ASSOC);
+   $boat_result =$stmt_boat->fetchAll(PDO::FETCH_ASSOC);
    
-   if ($result) {
-     echo json_encode($result);
+   if ($user_result && $boat_result) {
+      $array=json_encode(array('Users' => $user_result , 'Boats' => $boat_result)); 
+      echo $array;
    } else {
-     header('HTTP/1.0 401 Unauthorized');
+      header('HTTP/1.0 400 Bad Request');
    }
-   
+
+ 
 } catch (PDOException $e) {
    header('HTTP/1.0 500 Internal Server Error');
 }
-
 
 ?>

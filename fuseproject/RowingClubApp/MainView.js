@@ -11,15 +11,19 @@ var username = Observable();
 var password = Observable();
 var errorMessage = Observable("errorMessage");
 var errorPopup = Observable(false);
+var currentDate = Observable();
 
 
 //Exportmodules
 module.exports = {
         //Navigation
         gotoIndex: function() {router.push("index");},
-        gotoAddTrip: function() {router.push("addTrip");},
+        gotoAddTrip: function() {
+        	router.push("addTrip");
+        	showAddTrip();
+        },
         gotoSettings: function() {router.push("settings");},
-        //gotoLogbook: function() {router.push("logbook");},
+        gotoLogbook: function() {router.push("logbook");},
         gotoStatistics: function() {router.push("statistics");},
         gotoRanking: function() {router.push("ranking");},
         goBack: function() { router.goBack();},
@@ -29,6 +33,7 @@ module.exports = {
         errorPopup_visible: errorPopup,
         errorMessage: errorMessage,
         login: login,
+        currentDate: currentDate,
         //Other functions and variables
         sampleFunction: sampleFunction,
         continuousLocation: continuousLocation,
@@ -37,6 +42,40 @@ module.exports = {
         recordTrip: recordTrip
 };
 
+function showAddTrip() {
+
+	var getUserDetailsJson = Storage.readSync("user_details.json");
+	if (getUserDetailsJson) {
+		var parsedDetails = JSON.parse(getUserDetailsJson);
+		console.log("club_id: "+parsedDetails.club_id+"\nusername: "+parsedDetails.username);
+
+		fetch('http://www.scoctail.com/rowing_club/show_add_trip.php?clubId='+parsedDetails.club_id, {
+	        method: 'GET'
+		})
+			.then(function(response) {
+				status = response.status; 
+				console.log(status);
+				if (!response.ok) {
+					console.log("error");
+				}
+				return response.json();
+		})
+			.then(function(responseObject) {
+				//responseObject.User[x].firstname
+				//responseObject.User[x].lastname
+				console.log(responseObject.Boats[0].name);
+		})
+	} else {
+		console.log("Error getting user details from file");
+	}
+}
+
+
+
+function showCurrentDateonAddTrip(object) {
+	var time = new Date();
+	currentDate.value = "plaa";
+}
 
 
 
@@ -47,22 +86,8 @@ function login() {
 			errorPopup.value = false;
 			var jsonUser = JSON.stringify(user);
 
-			/*var xhr = new XMLHttpRequest();
-			var params = "username=x";
-			xhr.open("POST", "http://www.scoctail.com/rowing_club/login_user.php" , true);
-			xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			xhr.onreadystatechange = function() {
-			  if (xhr.readyState == 4) {
-			    // JSON.parse does not evaluate the attacker's scripts.
-			    var resp = JSON.parse(xhr.responseText);
-			    //console.log(resp.status);
-			  }
-			}
-			xhr.send(params);*/
-
-
-			fetch('http://www.scoctail.com/rowing_club/login_user.php?user='+username.value+
-				'&pw='+password.value, {
+		fetch('http://www.scoctail.com/rowing_club/login_user.php?user='+username.value+
+			'&pw='+password.value, {
 	        method: 'GET'
 	    })
 			.then(function(response) {
@@ -81,12 +106,14 @@ function login() {
 			    return response.json();    // This returns a promise
 		})
 			.then(function(responseObject) {
-				console.log("id:"+responseObject.id + ", username: "+responseObject.username);
-				var writeToFile = Storage.writeSync("user_details.json", responseObject);
-				if(writeToFile) {
+				console.log("club_id:"+responseObject.club_id + ", username: "+responseObject.username);
+				var saveUserDetails = Storage.writeSync("user_details.json", JSON.stringify(responseObject));
+				if(saveUserDetails) {
+					console.log("saved");
+					//gotoStatistics(); //this does not work ??
 					router.push("statistics");
 				} else {
-					console.log("writeToFile error");
+					console.log("saveUserDetails error");
 					errorMessage.value = "Error when logging in, please try again!";
 					errorPopup.value = true;
 				}
