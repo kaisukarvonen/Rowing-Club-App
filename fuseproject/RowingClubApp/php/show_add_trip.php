@@ -20,7 +20,7 @@ try {
    $stmt_user= $connection->prepare('SELECT id, firstname, lastname FROM User WHERE club_id=:clubId');
    $stmt_user->bindParam(':clubId', $clubId);
 
-   $stmt_boat= $connection->prepare('SELECT id, name FROM Boat WHERE club_id=:clubId');
+   $stmt_boat= $connection->prepare('SELECT id, name, capacity FROM Boat WHERE club_id=:clubId');
    $stmt_boat->bindParam(':clubId', $clubId);
 
    $stmt_user->execute();

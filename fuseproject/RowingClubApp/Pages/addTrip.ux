@@ -1,4 +1,5 @@
 <Page ux:Class="addTrip" Activated="{addTripPageActivated}">
+	<Font ux:Global="FontAwesome" File=".../build/FontAwesome.otf" />
 	<ScrollView>
 		<StackPanel Layer="Overlay">
 			<Header Margin="0, 10, 0, 10">Add Trip</Header>
@@ -23,26 +24,39 @@
 			    </TextInput>
 				
     		</Panel>
-    			<!--
-      		<Panel Width="100" Margin="20,25,190,0">
-				<Text TextColor="#fff">Boat</Text>
-			    <TextInput ux:Name="boat" PlaceholderText="Choose boat ▼" PlaceholderColor="#444" Height="35" Padding="5" Width="120" Margin="200,0,0,0">
-			        <Rectangle Layer="Background" Color="#999" CornerRadius="4">
-			            <Stroke Width="2" Brush="#BBB" />
-			        </Rectangle>
-			    </TextInput>
-				
+
+    		<Panel ux:Name="boatCombobox" Color="#BBB" Margin="20" Alignment="Top">
+    			<Panel ux:Name="boatHeader" Clicked="{openBoatSelection}" HitTestMode="LocalBoundsAndChildren">
+	    			<Text Margin="10" Alignment="CenterLeft">Choose boat</Text>
+	    			<Text Value="&#xf0d7;" Font="FontAwesome" FontSize="26" Alignment="CenterRight" Margin="10"/>
+	    			<WhilePressed>
+	    				<Change boatHeader.Color="#bab" Duration="1" />
+	    			</WhilePressed>
+	    		</Panel>
+	    		<Panel ux:Name="boatDropdown" Color="#ccc" LayoutRole="Inert" Alignment="Top" MaxHeight="200">
+	    			<Translation RelativeTo="Size" RelativeNode="boatCombobox" Y="1" />
+		    		<ScrollView>
+			    		<StackPanel>
+			    			<Each Items="{boatOptions}">
+			    				<Panel ux:Name="boat" Color="#ccc">
+			    					<Text Margin="10" Value="{}" />
+			    					<WhilePressed>
+			    						<Change boat.Color="#aaa" Duration="0.5" DurationBack="0.1" />
+			    					</WhilePressed>
+			    				</Panel>
+			    			</Each>
+			    		</StackPanel>
+		    		</ScrollView>
+		    		<WhileFalse Value="{boatSelectionIsOpen}">
+		    			<Change boatDropdown.Opacity="0" Duration="0.3" Easing="CubicOut" />
+		    			<Change boatDropdown.Visibility="Hidden" Delay="0.3" />
+		    			<!--<Move Y="-300" Duration="0.2" Easing="CubicIn" />-->
+		    		</WhileFalse>
+		    	</Panel>
     		</Panel>
 
-    		<Panel Width="100" Margin="20,25,190,0">
-				<Text TextColor="#fff">Participants</Text>
-			    <TextInput ux:Name="dahte" PlaceholderText="cuxg" PlaceholderColor="#444" Height="35" Padding="5" Width="120" Margin="200,0,0,0">
-			        <Rectangle Layer="Background" Color="#999" CornerRadius="4">
-			            <Stroke Width="2" Brush="#BBB" />
-			        </Rectangle>
-			    </TextInput>
-				
-    		</Panel>-->
+
+    		
 
 			<Panel Margin="20,40,20,0" Clicked="{recordTrip}">
 				<Text Value="Start trip" TextColor="White" Alignment="Center"/>

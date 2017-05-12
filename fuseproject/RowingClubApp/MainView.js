@@ -12,6 +12,8 @@ var password = Observable();
 var errorMessage = Observable("errorMessage");
 var errorPopup = Observable(false);
 var currentDate = Observable();
+var boatSelectionIsOpen = Observable(false);
+var boatOptions = Observable();
 
 
 //Exportmodules
@@ -35,6 +37,9 @@ module.exports = {
         login: login,
         currentDate: currentDate,
         addTripPageActivated: onAddTripPage,
+        boatSelectionIsOpen: boatSelectionIsOpen,
+        openBoatSelection: openBoatSelection,
+        boatOptions: boatOptions,
         //Other functions and variables
         sampleFunction: sampleFunction,
         continuousLocation: continuousLocation,
@@ -42,6 +47,13 @@ module.exports = {
         stopContinuousListener: stopContinuousListener,
         recordTrip: recordTrip
 };
+
+
+
+function openBoatSelection() {
+	boatSelectionIsOpen.value = !boatSelectionIsOpen.value;
+}
+
 
 function onAddTripPage() {
 	showCurrentDateonAddTrip(currentDate);
@@ -66,11 +78,18 @@ function showAddTrip() {
 				return response.json();
 		})
 			.then(function(responseObject) {
-				//console.log(JSON.stringify(responseObject.Boats));
+				//
 				if (Storage.writeSync("all_users.json", JSON.stringify(responseObject.Users)) &&
 				Storage.writeSync("all_boats.json", JSON.stringify(responseObject.Boats))) {
 					console.log("write to file successfull");
 				}
+				var array = JSON.stringify(responseObject.Boats);
+				console.log(array[0]); //prints [
+				var arr = [{"id":"1","name":"ExampleBoat","capacity":"8"},{"id":"2","name":"Boat2","capacity":"6"}];
+				console.log("" +arr[0].name); //this works
+
+				//console.log(responseObject.Boats[0]);
+				//addOptionsToDropDownList(JSON.stringify(responseObject.Boats), boatOptions, name);
 
 		})
 	} else {
@@ -79,7 +98,13 @@ function showAddTrip() {
 }
 
 
-
+function addOptionsToDropDownList(array, optionsObject, value) {
+	console.log("plaa");
+	for(var i=0; i<array.length; i++) {
+		optionsObject.add(array[i].value);
+		console.log(array[i].value);
+	}
+}
 
 function showCurrentDateonAddTrip(object) {
 	var date = new Date();
