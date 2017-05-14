@@ -15,45 +15,79 @@
     		</Panel>
 
     		
-    		<Panel Width="100" Margin="30,25,190,0">
-				<Text TextColor="#fff">Date</Text>
-			    <TextInput ux:Name="date" PlaceholderText="{currentDate}" PlaceholderColor="#ccc" Height="35" Padding="13,3,3,3" Width="110" Margin="200,0,0,0" IsEnabled="false" Alignment="Center">
-			        <Rectangle Layer="Background" Color="#999" CornerRadius="4">
-			            <Stroke Width="2" Brush="#BBB" />
-			        </Rectangle>
-			    </TextInput>
+    	<Panel Width="100" Margin="30,25,190,0">
+			<Text TextColor="#fff">Date</Text>
+			   <TextInput ux:Name="date" PlaceholderText="{currentDate}" PlaceholderColor="#ccc" Height="35" Padding="13,3,3,3" Width="110" Margin="200,0,0,0" IsEnabled="false" Alignment="Center">
+			     <Rectangle Layer="Background" Color="#999" CornerRadius="4">
+			        <Stroke Width="2" Brush="#BBB" />
+			     </Rectangle>
+			   </TextInput>
 				
-    		</Panel>
+    	</Panel>
 
-    		<Panel ux:Name="boatCombobox" Color="#BBB" Margin="20" Alignment="Top">
-    			<Panel ux:Name="boatHeader" Clicked="{openBoatSelection}" HitTestMode="LocalBoundsAndChildren">
-	    			<Text Margin="10" Alignment="CenterLeft">Choose boat</Text>
-	    			<Text Value="&#xf0d7;" Font="FontAwesome" FontSize="26" Alignment="CenterRight" Margin="10"/>
-	    			<WhilePressed>
-	    				<Change boatHeader.Color="#bab" Duration="1" />
-	    			</WhilePressed>
-	    		</Panel>
-	    		<Panel ux:Name="boatDropdown" Color="#ccc" LayoutRole="Inert" Alignment="Top" MaxHeight="200">
-	    			<Translation RelativeTo="Size" RelativeNode="boatCombobox" Y="1" />
-		    		<ScrollView>
-			    		<StackPanel>
-			    			<Each Items="{boatOptions}">
-			    				<Panel ux:Name="boat" Color="#ccc">
-			    					<Text Margin="10" Value="{}" />
-			    					<WhilePressed>
-			    						<Change boat.Color="#aaa" Duration="0.5" DurationBack="0.1" />
-			    					</WhilePressed>
-			    				</Panel>
-			    			</Each>
-			    		</StackPanel>
-		    		</ScrollView>
-		    		<WhileFalse Value="{boatSelectionIsOpen}">
-		    			<Change boatDropdown.Opacity="0" Duration="0.3" Easing="CubicOut" />
-		    			<Change boatDropdown.Visibility="Hidden" Delay="0.3" />
-		    			<!--<Move Y="-300" Duration="0.2" Easing="CubicIn" />-->
-		    		</WhileFalse>
-		    	</Panel>
-    		</Panel>
+
+    	<Panel ux:Name="boatCombobox" Color="#ccc" Margin="55,25,60,0" Alignment="Top">
+    		<Panel ux:Name="boatHeader" Clicked="{openBoatSelection}" HitTestMode="LocalBoundsAndChildren">
+	    		<Text Margin="10" Alignment="CenterLeft" Value="{selectedBoat}"/>
+	    		<Text Value="&#xf0d7;" Font="FontAwesome" FontSize="26" Alignment="CenterRight" Margin="10"/>
+	    		<WhilePressed>
+	    			<Change boatHeader.Color="#bab" Duration="1" />
+	    		</WhilePressed>
+	    	</Panel>
+	    	<Panel ux:Name="boatDropdown" Color="#ccc" LayoutRole="Inert" Alignment="Top" MaxHeight="200">
+	    		<Translation RelativeTo="Size" RelativeNode="boatCombobox" Y="1" />
+		    	<ScrollView>
+			    	<StackPanel>
+			    		<Each Items="{boatOptions}">
+			    			<Panel ux:Name="boat" Color="#ccc" Clicked="{boatNameClicked}">
+			    				<Text Margin="10" Value="{boatName}" />
+			    				<WhilePressed>
+			    					<Change boat.Color="#aaa" Duration="0.5" DurationBack="0.1" />
+			    				</WhilePressed>
+			    			</Panel>
+			    		</Each>
+			    	</StackPanel>
+		    	</ScrollView>
+		    	<WhileFalse Value="{boatSelectionIsOpen}">
+		    		<Change boatDropdown.Opacity="0" Duration="0.3" Easing="CubicOut" />
+		    		<Change boatDropdown.Visibility="Hidden" Delay="0.3" />
+		    			
+		    	</WhileFalse>
+
+		    </Panel>
+    	</Panel>
+
+
+    	<Panel ux:Name="participantCombobox" Color="#ccc" Margin="55,25,60,0" Alignment="Top">
+    		<Panel ux:Name="participantHeader" Clicked="{openParticipantSelection}" HitTestMode="LocalBoundsAndChildren">
+	    		<Text Margin="10" Alignment="CenterLeft" Value="{selectedParticipant}"/>
+	    		<Text Value="&#xf0d7;" Font="FontAwesome" FontSize="26" Alignment="CenterRight" Margin="10"/>
+	    		<WhilePressed>
+	    			<Change participantHeader.Color="#bab" Duration="1" />
+	    		</WhilePressed>
+	    	</Panel>
+	    	<Panel ux:Name="participantDropdown" Color="#ccc" LayoutRole="Inert" Alignment="Top" MaxHeight="200">
+	    		<Translation RelativeTo="Size" RelativeNode="participantCombobox" Y="1" />
+		    	<ScrollView>
+			    	<StackPanel>
+			    		<Each Items="{participantOptions}">
+			    			<Panel ux:Name="participant" Color="#ccc" Clicked="{participantNameClicked}">
+			    				<Text Margin="10" Value="{participantName}" />
+			    				<WhilePressed>
+			    					<Change participant.Color="#aaa" Duration="0.5" DurationBack="0.1" />
+			    				</WhilePressed>
+			    			</Panel>
+			    		</Each>
+			    	</StackPanel>
+		    	</ScrollView>
+		    	<WhileFalse Value="{participantSelectionIsOpen}">
+		    		<Change participantDropdown.Opacity="0" Duration="0.3" Easing="CubicOut" />
+		    		<Change participantDropdown.Visibility="Hidden" Delay="0.3" />
+		    			
+		    	</WhileFalse>
+
+		    </Panel>
+    	</Panel>
 
 
     		

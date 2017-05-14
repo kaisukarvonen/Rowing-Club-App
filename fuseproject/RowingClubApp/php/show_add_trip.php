@@ -17,7 +17,7 @@ try {
    $connection = new PDO("mysql:host=$servername;dbname=$dbname", $dbusername, $dbpassword);
    $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-   $stmt_user= $connection->prepare('SELECT id, firstname, lastname FROM User WHERE club_id=:clubId');
+   $stmt_user= $connection->prepare('SELECT id, username, firstname, lastname FROM User WHERE club_id=:clubId');
    $stmt_user->bindParam(':clubId', $clubId);
 
    $stmt_boat= $connection->prepare('SELECT id, name, capacity FROM Boat WHERE club_id=:clubId');

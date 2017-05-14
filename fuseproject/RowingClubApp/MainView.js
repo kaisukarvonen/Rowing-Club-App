@@ -14,6 +14,10 @@ var errorPopup = Observable(false);
 var currentDate = Observable();
 var boatSelectionIsOpen = Observable(false);
 var boatOptions = Observable();
+var selectedBoat = Observable("Choose boat");
+var participantSelectionIsOpen = Observable(false);
+var selectedParticipant = Observable("Choose participants");
+var participantOptions = Observable();
 
 
 //Exportmodules
@@ -35,19 +39,46 @@ module.exports = {
         errorPopup_visible: errorPopup,
         errorMessage: errorMessage,
         login: login,
+
         currentDate: currentDate,
         addTripPageActivated: onAddTripPage,
         boatSelectionIsOpen: boatSelectionIsOpen,
         openBoatSelection: openBoatSelection,
-        boatOptions: boatOptions,
-        //Other functions and variables
-        sampleFunction: sampleFunction,
+        selectedBoat: selectedBoat,
+        boatOptions: boatOptions.map(function(option) {
+        		return {
+        			boatName: option,
+	        		boatNameClicked: function() {
+	        			selectedBoat.value = option;
+	        			boatSelectionIsOpen.value = false;
+        		}
+        	}
+        }),
+
+
+        openParticipantSelection: openParticipantSelection,
+        participantSelectionIsOpen: participantSelectionIsOpen,
+        selectedParticipant: selectedParticipant,
+        participantOptions: participantOptions.map(function(option) {
+        		return {
+        			participantName: option,
+	        		participantNameClicked: function() {
+	        			selectedParticipant.value = option;
+	        			participantSelectionIsOpen.value = false;
+        		}
+        	}
+        }),
+
+        
         continuousLocation: continuousLocation,
         startContinuousListener: startContinuousListener,
         stopContinuousListener: stopContinuousListener,
         recordTrip: recordTrip
 };
 
+function openParticipantSelection() {
+	participantSelectionIsOpen.value = !participantSelectionIsOpen.value;
+}
 
 
 function openBoatSelection() {
@@ -61,9 +92,8 @@ function onAddTripPage() {
 
 function showAddTrip() {
 
-	var getUserDetailsJson = Storage.readSync("user_details.json");
-	if (getUserDetailsJson) {
-		var parsedDetails = JSON.parse(getUserDetailsJson);
+
+		var parsedDetails = getUserDetails("user_details.json");
 		console.log("club_id: "+parsedDetails.club_id+"\nusername: "+parsedDetails.username);
 
 		fetch('http://www.scoctail.com/rowing_club/show_add_trip.php?clubId='+parsedDetails.club_id, {
@@ -83,28 +113,38 @@ function showAddTrip() {
 				Storage.writeSync("all_boats.json", JSON.stringify(responseObject.Boats))) {
 					console.log("write to file successfull");
 				}
-				var array = JSON.stringify(responseObject.Boats);
-				console.log(array[0]); //prints [
-				var arr = [{"id":"1","name":"ExampleBoat","capacity":"8"},{"id":"2","name":"Boat2","capacity":"6"}];
-				console.log("" +arr[0].name); //this works
-
-				//console.log(responseObject.Boats[0]);
-				//addOptionsToDropDownList(JSON.stringify(responseObject.Boats), boatOptions, name);
+				addOptionsToBoatDropDownList(responseObject.Boats, boatOptions);
+				addOptionsToParticipantDropDownList(responseObject.Users, participantOptions);
 
 		})
-	} else {
-		console.log("Error getting user details from file");
+}
+
+function getUserDetails(file) {
+	var getUserDetailsJson = Storage.readSync(file);
+	if (getUserDetailsJson) {
+		var parsedDetails = JSON.parse(getUserDetailsJson);
+		return parsedDetails;
 	}
 }
 
-
-function addOptionsToDropDownList(array, optionsObject, value) {
-	console.log("plaa");
+function addOptionsToBoatDropDownList(array, optionsObject) {
 	for(var i=0; i<array.length; i++) {
-		optionsObject.add(array[i].value);
-		console.log(array[i].value);
+		if (!boatOptions.contains(array[i].name)) {
+			optionsObject.add(array[i].name);
+		}
 	}
 }
+
+
+function addOptionsToParticipantDropDownList(array, optionsObject) {
+	var parsedDetails = getUserDetails("user_details.json");
+	for(var i=0; i<array.length; i++) {
+		if (!participantOptions.contains(array[i].username) && array[i].username !== parsedDetails.username) {
+			optionsObject.add(array[i].firstname + " " + array[i].lastname);
+		}
+	}
+}
+
 
 function showCurrentDateonAddTrip(object) {
 	var date = new Date();
@@ -167,10 +207,6 @@ function inputIsValid(username, password) {
 	return true;
 }
 
-// Start of JavaScript functions (need to be added to module.export to use)
-function sampleFunction(){
-    console.log("Console Log of the sample function");
-}
 
 //Get Location (continous)
 var continuousLocation = Observable("");
@@ -193,9 +229,5 @@ function stopContinuousListener() {
 //Record trip
 function recordTrip() {
     startContinuousListener();
-}
-
-//Stop trip-Record and save it
-function recordTrip() {
-    startContinuousListener();
+    console.log(selectedBoat.value);
 }
