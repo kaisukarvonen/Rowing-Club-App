@@ -18,6 +18,8 @@ var selectedBoat = Observable("Choose boat");
 var participantSelectionIsOpen = Observable(false);
 var selectedParticipant = Observable("Choose participants");
 var participantOptions = Observable();
+var participantArray = Observable();
+var chosenBoatFormatted = Observable({name: 0, capacity: 0});
 
 
 //Exportmodules
@@ -47,10 +49,11 @@ module.exports = {
         selectedBoat: selectedBoat,
         boatOptions: boatOptions.map(function(option) {
         		return {
-        			boatName: option,
+        			boatName: option.name + " (fits "+option.capacity+")",
 	        		boatNameClicked: function() {
-	        			selectedBoat.value = option;
+	        			selectedBoat.value = "Boat: "+option.name + " (fits "+option.capacity+")";
 	        			boatSelectionIsOpen.value = false;
+	        			chosenBoatFormatted.replaceAt(0, {name: option.name, capacity: option.capacity});
         		}
         	}
         }),
@@ -64,12 +67,31 @@ module.exports = {
         			participantName: option,
 	        		participantNameClicked: function() {
 	        			selectedParticipant.value = option;
-	        			participantSelectionIsOpen.value = false;
+	        			
+	        			if (!participantArray.contains(option) && chosenBoatFormatted.getAt(0).capacity > participantArray.length) {
+	        				participantOptions.replaceAt(participantOptions.indexOf(option), "✓ "+option);
+	        				
+	        				participantArray.add("✓ "+option);
+	        			} else if (participantArray.contains(option) && chosenBoatFormatted.getAt(0).capacity >= participantArray.length) {
+		        				participantOptions.replaceAt(participantOptions.indexOf(option), option.substring(2));
+		        				participantArray.remove(option);
+		        			
+	        			}
+
+
+	        			if (participantArray.length > 1) {
+	        				selectedParticipant.value = participantArray.length + " participants";
+	        			} else if (participantArray.length === 0) {
+	        				selectedParticipant.value = "Choose participants";
+	        			} else {
+	        				selectedParticipant.value = "1 participant";
+	        			}
+	        			
+	        			
         		}
         	}
         }),
-
-        
+      
         continuousLocation: continuousLocation,
         startContinuousListener: startContinuousListener,
         stopContinuousListener: stopContinuousListener,
@@ -128,18 +150,20 @@ function getUserDetails(file) {
 }
 
 function addOptionsToBoatDropDownList(array, optionsObject) {
-	for(var i=0; i<array.length; i++) {
-		if (!boatOptions.contains(array[i].name)) {
-			optionsObject.add(array[i].name);
+	if (array.length !== optionsObject.length) {
+		optionsObject.clear();
+		for(var i=0; i<array.length; i++) {
+			optionsObject.add({name: array[i].name, capacity: array[i].capacity});
 		}
 	}
+	//console.log(optionsObject.getAt(0).capacity);
 }
 
 
 function addOptionsToParticipantDropDownList(array, optionsObject) {
 	var parsedDetails = getUserDetails("user_details.json");
 	for(var i=0; i<array.length; i++) {
-		if (!participantOptions.contains(array[i].username) && array[i].username !== parsedDetails.username) {
+		if (!optionsObject.contains(array[i].username) && array[i].username !== parsedDetails.username) {
 			optionsObject.add(array[i].firstname + " " + array[i].lastname);
 		}
 	}
@@ -200,7 +224,7 @@ function login() {
 
 function inputIsValid(username, password) {
 	if (!username || !password) {
-		errorMessage.value = "Please fill out all fields!"
+		errorMessage.value = "Please fill out all fields!";
 		errorPopup.value = true;
 		return false;
 	}
@@ -210,8 +234,8 @@ function inputIsValid(username, password) {
 
 //Get Location (continous)
 var continuousLocation = Observable("");
-     GeoLocation.onChanged = function(location) {
-        continuousLocation.value = JSON.stringify(location);
+GeoLocation.onChanged = function(location) {
+    continuousLocation.value = JSON.stringify(location);
 };
 
 //Start function for continious location
@@ -229,5 +253,12 @@ function stopContinuousListener() {
 //Record trip
 function recordTrip() {
     startContinuousListener();
-    console.log(selectedBoat.value);
+    console.log(chosenBoatFormatted.getAt(0).name);
+    participantArray.forEach(function(name,index) {
+    	participantArray.replaceAt(index, name.substring(2));
+    });
+	participantArray.forEach(function(name,index) {
+    	console.log(name);
+    });
+
 }

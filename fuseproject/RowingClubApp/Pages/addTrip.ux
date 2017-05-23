@@ -76,6 +76,9 @@
 			    				<WhilePressed>
 			    					<Change participant.Color="#aaa" Duration="0.5" DurationBack="0.1" />
 			    				</WhilePressed>
+			    				<WhileTrue Value="{participantIsChosen}">
+			    					<Change participant.Color="#000" />
+			    				</WhileTrue>
 			    			</Panel>
 			    		</Each>
 			    	</StackPanel>
