@@ -3,6 +3,7 @@
   "Packages": [
     "Fuse",
     "FuseJS",
+    "Fuse.Maps",
     "Fuse.GeoLocation"
   ],
   "Includes": [
@@ -10,5 +11,11 @@
   ],
   "Mobile": {
         "Orientations": "Portrait"
-    }
+  },
+
+  "Android": {
+     "Geo": {
+          "ApiKey": "AIzaSyDhk6QIiJdJd456137NRs2uPN3IrKOvIzk"
+      }
+  }
 }

@@ -7,6 +7,10 @@ var Storage = require("FuseJS/Storage");
 var t_data = new Observable(Login);
 console.log(JSON.stringify(t_data.value));*/
 
+var currentLatitude = Observable();
+var currentLongitude = Observable();
+var immediateLocation = Observable("now location");
+var continuousLocation = Observable();
 var username = Observable();
 var password = Observable();
 var errorMessage = Observable("errorMessage");
@@ -92,9 +96,12 @@ module.exports = {
         	}
         }),
       
+      	currentLatitude: currentLatitude,
+      	currentLongitude: currentLongitude, 
         continuousLocation: continuousLocation,
         startContinuousListener: startContinuousListener,
         stopContinuousListener: stopContinuousListener,
+        immediateLocation: immediateLocation,
         recordTrip: recordTrip
 };
 
@@ -232,12 +239,6 @@ function inputIsValid(username, password) {
 }
 
 
-//Get Location (continous)
-var continuousLocation = Observable("");
-GeoLocation.onChanged = function(location) {
-    continuousLocation.value = JSON.stringify(location);
-};
-
 //Start function for continious location
 function startContinuousListener() {
     var intervalMs = 10000;
@@ -253,6 +254,14 @@ function stopContinuousListener() {
 //Record trip
 function recordTrip() {
     startContinuousListener();
+    router.push("showCurrentTrip");
+    
+	GeoLocation.on("changed", function(location) {
+		currentLatitude.value = location.latitude;
+		currentLongitude.value = location.longitude;
+	});
+
+
     console.log(chosenBoatFormatted.getAt(0).name);
     participantArray.forEach(function(name,index) {
     	participantArray.replaceAt(index, name.substring(2));
@@ -260,5 +269,6 @@ function recordTrip() {
 	participantArray.forEach(function(name,index) {
     	console.log(name);
     });
+
 
 }

@@ -105,7 +105,9 @@
 			</Panel>
 			<Panel>
 				<Text TextColor="White" Margin="20, 30, 0, 0">Location (reloads every 10 seconds):</Text>
-				<Text TextColor="White" Margin="20, 30, 0, 0" Value="{continuousLocation}" />
+				<Text TextColor="White" Margin="20, 50, 0, 0" Value="{continuousLocation}" />
+
+				<Text TextColor="White" Margin="20, 90, 0, 0" Value="{immediateLocation}" />
 			</Panel>
 		</StackPanel>
 	</ScrollView>

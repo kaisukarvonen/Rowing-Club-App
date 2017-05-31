@@ -22,6 +22,11 @@
             <Page ux:Template="settings">
                 <settings />
             </Page>
+
+            <Page ux:Template="showCurrentTrip">
+                <showCurrentTrip />
+            </Page>
+
              <Page ux:Template="logbook">
                 <logbook />
                 <WhileActive>

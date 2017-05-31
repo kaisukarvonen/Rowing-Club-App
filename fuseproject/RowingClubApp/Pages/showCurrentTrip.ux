@@ -1,0 +1,9 @@
+<Page ux:Class="showCurrentTrip">
+	<ClientPanel>
+		<NativeViewHost>
+			<MapView Latitude="{currentLatitude}" Longitude="{currentLongitude}" Zoom="10">
+				<MapMarker Latitude="{currentLatitude}" Longitude="{currentLongitude}" Label="Fuse HQ"/>
+			</MapView>
+		</NativeViewHost>
+	</ClientPanel>
+</Page>
