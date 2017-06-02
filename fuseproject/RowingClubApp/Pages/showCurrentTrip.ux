@@ -6,4 +6,10 @@
 			</MapView>
 		</NativeViewHost>
 	</ClientPanel>
+
+				<Panel Margin="20,40,20,0" Clicked="{stopContinuousListener}">
+				<Text Value="Stop trip" TextColor="White" Alignment="Center"/>
+				<Rectangle CornerRadius="4" Layer="Background" Color="#25a" Height="40"/>
+			</Panel>
+
 </Page>

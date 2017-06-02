@@ -18,12 +18,16 @@ var errorPopup = Observable(false);
 var currentDate = Observable();
 var boatSelectionIsOpen = Observable(false);
 var boatOptions = Observable();
-var selectedBoat = Observable("Choose boat");
+var selectedBoat = Observable();
 var participantSelectionIsOpen = Observable(false);
-var selectedParticipant = Observable("Choose participants");
+var selectedParticipant = Observable();
 var participantOptions = Observable();
 var participantArray = Observable();
-var chosenBoatFormatted = Observable({name: 0, capacity: 0});
+var chosenBoatFormatted = Observable({id: 0, name: 0, capacity: 0});
+
+var chosenParticipantsFormatted = Observable();
+
+var participantIds = [];
 
 
 //Exportmodules
@@ -33,6 +37,7 @@ module.exports = {
         gotoAddTrip: function() {
         	router.push("addTrip");
         	showAddTrip();
+        	
         },
         gotoSettings: function() {router.push("settings");},
         gotoLogbook: function() {router.push("logbook");},
@@ -57,7 +62,7 @@ module.exports = {
 	        		boatNameClicked: function() {
 	        			selectedBoat.value = "Boat: "+option.name + " (fits "+option.capacity+")";
 	        			boatSelectionIsOpen.value = false;
-	        			chosenBoatFormatted.replaceAt(0, {name: option.name, capacity: option.capacity});
+	        			chosenBoatFormatted.replaceAt(0, {id: option.id, name: option.name, capacity: option.capacity});
         		}
         	}
         }),
@@ -120,10 +125,13 @@ function onAddTripPage() {
 }
 
 function showAddTrip() {
-
+		participantArray.clear();
+		selectedParticipant.value = "Choose participants";
+		selectedBoat.value = "Choose boat";
 
 		var parsedDetails = getUserDetails("user_details.json");
 		console.log("club_id: "+parsedDetails.club_id+"\nusername: "+parsedDetails.username);
+		participantIds.push(parsedDetails.id);
 
 		fetch('http://www.scoctail.com/rowing_club/show_add_trip.php?clubId='+parsedDetails.club_id, {
 	        method: 'GET'
@@ -157,22 +165,21 @@ function getUserDetails(file) {
 }
 
 function addOptionsToBoatDropDownList(array, optionsObject) {
-	if (array.length !== optionsObject.length) {
-		optionsObject.clear();
+	optionsObject.clear();
 		for(var i=0; i<array.length; i++) {
-			optionsObject.add({name: array[i].name, capacity: array[i].capacity});
+			optionsObject.add({id: array[i].id, name: array[i].name, capacity: array[i].capacity});
 		}
-	}
-	//console.log(optionsObject.getAt(0).capacity);
 }
 
 
 function addOptionsToParticipantDropDownList(array, optionsObject) {
+	optionsObject.clear();
 	var parsedDetails = getUserDetails("user_details.json");
 	for(var i=0; i<array.length; i++) {
-		if (!optionsObject.contains(array[i].username) && array[i].username !== parsedDetails.username) {
+		if (array[i].username !== parsedDetails.username) {
 			optionsObject.add(array[i].firstname + " " + array[i].lastname);
-		}
+			chosenParticipantsFormatted.add({id: array[i].id, name: array[i].firstname + " " + array[i].lastname});
+		} 
 	}
 }
 
@@ -246,29 +253,99 @@ function startContinuousListener() {
     GeoLocation.startListening(intervalMs, desiredAccuracyInMeters);
 }
 
+var coordinates = [];
+
 //Stop function for continious location
 function stopContinuousListener() {
     GeoLocation.stopListening();
+
+    var boatId = chosenBoatFormatted.getAt(0).id;
+	coordinates.push({lat: "60.26898181", lon: "24.46944416"});
+	coordinates.push({lat: "60.23503919", lon: "24.58250999"});
+	coordinates.push({lat: "60.21398306", lon: "24.66679573"});
+	
+	var totalKm = calculateTotalDistance(coordinates);
+	var fixedKm = totalKm.toFixed(1);
+	console.log("total: "+totalKm);
+    var coordinatesString = JSON.stringify(coordinates);
+    var idString = JSON.stringify(participantIds);  
+    console.log(coordinatesString);
+    console.log(idString);
+
+
+	console.log('http://www.scoctail.com/rowing_club/add_new_trip.php?boatId='+boatId+
+			'&coordinates='+coordinatesString+'&km='+fixedKm+'&participants='+idString);
+    /*
+    fetch('http://www.scoctail.com/rowing_club/add_new_trip.php?boatId='+boatId+
+			'&coordinates='+coordinatesString+'&km='+totalKm+'&participants='+idString, {
+	        method: 'GET'
+		})
+			.then(function(response) {
+				status = response.status; 
+				console.log(status);
+				if (!response.ok) {
+					console.log("error");
+				}
+				return response.json();
+		})
+			.then(function(responseObject) {
+				//
+				console.log("here");
+
+	})
+*/
+	
+
 }
+
+
 
 //Record trip
 function recordTrip() {
+	coordinates = [];
     startContinuousListener();
-    router.push("showCurrentTrip");
-    
-	GeoLocation.on("changed", function(location) {
-		currentLatitude.value = location.latitude;
-		currentLongitude.value = location.longitude;
-	});
-
+    //router.push("showCurrentTrip");
 
     console.log(chosenBoatFormatted.getAt(0).name);
     participantArray.forEach(function(name,index) {
     	participantArray.replaceAt(index, name.substring(2));
     });
 	participantArray.forEach(function(name,index) {
-    	console.log(name);
+    	for(var i=0; i<chosenParticipantsFormatted.length; i++) {
+    		
+    		if (chosenParticipantsFormatted.getAt(i).name === name) {
+    			participantIds.push(chosenParticipantsFormatted.getAt(i).id);
+    		}
+    	}
     });
+     console.log("here");
+
+}
+
+GeoLocation.on("changed", function(location) {
+		currentLatitude.value = location.latitude;
+		currentLongitude.value = location.longitude;
+		coordinates.push({lat: location.latitude, lon: location.longitude});
+
+});
 
 
+function calculateTotalDistance(array) {
+	var totalKm = 0;
+	for (var i=0; i < array.length-1; i++) {
+		var km = distanceBetweenTwoPoints(array[i].lat, array[i].lon,
+		array[i+1].lat, array[i+1].lon);
+		totalKm+= km;
+	}
+	return totalKm;
+}
+
+function distanceBetweenTwoPoints(lat1, lon1, lat2, lon2) {
+  var p = 0.017453292519943295;    // Math.PI / 180
+  var c = Math.cos;
+  var a = 0.5 - c((lat2 - lat1) * p)/2 + 
+          c(lat1 * p) * c(lat2 * p) * 
+          (1 - c((lon2 - lon1) * p))/2;
+
+  return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
 }
