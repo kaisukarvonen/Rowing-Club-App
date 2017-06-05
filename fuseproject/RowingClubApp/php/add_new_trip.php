@@ -6,7 +6,7 @@ use Zend\Config\Factory;
 $boatId = $_GET['boatId'];
 $km = $_GET['km'];
 $str_coordinates = $_GET['coordinates'];
-$array_coordinates = json_decode($str_coordinates);
+$array_coordinates = json_decode($str_coordinates, true);
 $str_participants = $_GET['participants'];
 
 
@@ -14,6 +14,7 @@ $array_participants = json_decode($str_participants);
 foreach ($array_participants as &$val) {
     $val = intval($val);
 }
+sort($array_participants);
 
 $config = Factory::fromFile('config_rowing_club_db.php', true);
 
@@ -23,50 +24,61 @@ $dbpassword=$config->get("database")->get("password");
 $dbname=$config->get("database")->get("dbname");
 
 
-var_dump($array_coordinates);
-
-
-
-
 try {
 
    $connection = new PDO("mysql:host=$servername;dbname=$dbname", $dbusername, $dbpassword);
    $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-   $stmt_addTrip= $connection->prepare('INSERT INTO Trip(km, boat_id) values (:km, :boatId)');
-   $stmt_addTrip->bindParam(':km', $km);
-   $stmt_addTrip->bindParam(':boatId', $boatId);
-   $stmt_addTrip->execute();
 
-   $trip_id = $connection->lastInsertId();
-   
-   $stmt_addUserTrip= $connection->prepare('INSERT INTO User_trip values (:user_id, '+$trip_id+')');
-   foreach ($array_participants as $val) {
-       $stmt_addUserTrip->bindParam(':user_id', $val);
-       $stmt_addUserTrip->execute();
+   $tripAdded = false;
+
+   $stmt_searchTrip = $connection->prepare('SELECT id FROM Trip WHERE date=CURDATE() AND boat_id=:boatId');
+   $stmt_searchTrip->bindParam(':boatId', $boatId);
+   $stmt_searchTrip->execute();
+   $searchResult=$stmt_searchTrip->fetchAll();
+   if (count($searchResult > 0)) {
+      for($i =0; $i < count($searchResult); $i++) {
+        $stmt_searchUserTrip = $connection->prepare('SELECT user_id FROM Trip WHERE trip_id=:trip_id');
+        $stmt_searchUserTrip->bindParam(':trip_id', $searchResult[i]["id"]);
+        $stmt_searchUserTrip->execute();
+        $trip_userList=$stmt_searchUserTrip->fetchAll();
+        if (count($trip_userList) == count($array_participants) && sort($trip_userList) == $array_participants) {
+          $tripAdded = true;
+          header('HTTP/1.0 400 Trip Already Added');
+          break;
+        }
+      }
    }
 
-   $stmt_addTripCoordinates= $connection->prepare('INSERT INTO Trip_coordinates(latitude,longitude,trip_id) values (:lat, :lon, '+$trip_id+')');
+  if (!$tripAdded) {
+     $stmt_addTrip= $connection->prepare('INSERT INTO Trip(km, boat_id, date) values (:km, :boatId, CURDATE())');
+     $stmt_addTrip->bindParam(':km', $km);
+     $stmt_addTrip->bindParam(':boatId', $boatId);
+     $stmt_addTrip->execute();
 
-   foreach ($array_coordinates as $key => $val) {
-       //$stmt_addUserTrip->bindParam(':lat', $val);
-       //$stmt_addUserTrip->bindParam(':lon', $val);
-       $stmt_addUserTrip->execute();
-   }
+     $trip_id = $connection->lastInsertId();
+     
+     $stmt_addUserTrip= $connection->prepare('INSERT INTO User_trip values (:user_id, :trip_id)');
+     
+     for($i =0; $i < count($array_participants); $i++) {
+         $stmt_addUserTrip->bindParam(':user_id', $array_participants[$i]);
+         $stmt_addUserTrip->bindParam(':trip_id', $trip_id);
+         $stmt_addUserTrip->execute();
+      }
 
+     $stmt_addTripCoordinates= $connection->prepare('INSERT INTO Trip_coordinates(latitude,longitude,trip_id) values (:lat, :lon, :trip_id)');
 
-
-   
-   if ($user_result && $boat_result) {
-      $array=json_encode(array('Users' => $user_result , 'Boats' => $boat_result)); 
-      echo $array;
-   } else {
-      header('HTTP/1.0 400 Bad Request');
-   }
+     for($i =0; $i < count($array_coordinates); $i++) {
+        $stmt_addTripCoordinates->bindParam(':lat', $array_coordinates[$i]["lat"]);
+        $stmt_addTripCoordinates->bindParam(':lon', $array_coordinates[$i]["lon"]);
+        $stmt_addTripCoordinates->bindParam(':trip_id', $trip_id);
+        $stmt_addTripCoordinates->execute();
+     }
+  }
 
  
 } catch (PDOException $e) {
-   header('HTTP/1.0 500 Internal Server Error');
+   //header('HTTP/1.0 500 Internal Server Error');
+   echo $e->getMessage(). " ---- on line ".$e->getLine();
 }
 
 

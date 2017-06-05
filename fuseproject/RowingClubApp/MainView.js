@@ -302,24 +302,13 @@ function stopContinuousListener() {
 
 //Record trip
 function recordTrip() {
-	coordinates = [];
-    startContinuousListener();
-    //router.push("showCurrentTrip");
-
-    console.log(chosenBoatFormatted.getAt(0).name);
-    participantArray.forEach(function(name,index) {
-    	participantArray.replaceAt(index, name.substring(2));
-    });
-	participantArray.forEach(function(name,index) {
-    	for(var i=0; i<chosenParticipantsFormatted.length; i++) {
-    		
-    		if (chosenParticipantsFormatted.getAt(i).name === name) {
-    			participantIds.push(chosenParticipantsFormatted.getAt(i).id);
-    		}
-    	}
-    });
-     console.log("here");
-
+    createParticipantIdList(participantArray, participantIds);
+	if (chosenBoatFormatted.getAt(0).id != 0 && participantIds.length > 1) {
+		router.push("showCurrentTrip");
+    	startContinuousListener();
+	} else {
+		//show alert box
+	}
 }
 
 GeoLocation.on("changed", function(location) {
@@ -348,4 +337,18 @@ function distanceBetweenTwoPoints(lat1, lon1, lat2, lon2) {
           (1 - c((lon2 - lon1) * p))/2;
 
   return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
+}
+
+function createParticipantIdList(originalArray, idArray) {
+	originalArray.forEach(function(name,index) {
+   		originalArray.replaceAt(index, name.substring(2));
+    });
+	originalArray.forEach(function(name,index) {
+    	for(var i=0; i < chosenParticipantsFormatted.length; i++) {
+    		
+    		if (chosenParticipantsFormatted.getAt(i).name === name) {
+    			idArray.push(chosenParticipantsFormatted.getAt(i).id);
+    		}
+    	}
+    });
 }
