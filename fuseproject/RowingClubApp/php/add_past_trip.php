@@ -5,10 +5,8 @@ use Zend\Config\Factory;
 
 $boatId = $_GET['boatId'];
 $km = $_GET['km'];
-$str_coordinates = $_GET['coordinates'];
-$array_coordinates = json_decode($str_coordinates, true);
+$dateStr = $_GET['date'];
 $str_participants = $_GET['participants'];
-
 
 $array_participants = json_decode($str_participants);
 foreach ($array_participants as &$val) {
@@ -31,8 +29,9 @@ try {
 
    $tripAdded = false;
 
-   $stmt_searchTrip = $connection->prepare('SELECT id FROM Trip WHERE date=CURDATE() AND boat_id=:boatId');
+   $stmt_searchTrip = $connection->prepare('SELECT id FROM Trip WHERE date=:dateStr AND boat_id=:boatId');
    $stmt_searchTrip->bindParam(':boatId', $boatId);
+   $stmt_searchTrip->bindParam(':dateStr', $dateStr);
    $stmt_searchTrip->execute();
    $searchResult=$stmt_searchTrip->fetchAll();
    if (count($searchResult > 0)) {
@@ -41,6 +40,9 @@ try {
         $stmt_searchUserTrip->bindParam(':trip_id', $searchResult[i]["id"]);
         $stmt_searchUserTrip->execute();
         $trip_userList=$stmt_searchUserTrip->fetchAll();
+        for($i =0; $i < count($trip_userList); $i++) {
+          echo $trip_userList[i];
+        }
         if (count($trip_userList) == count($array_participants) && sort($trip_userList) == $array_participants) {
           $tripAdded = true;
           header('HTTP/1.0 400 Trip Already Added');
@@ -50,9 +52,10 @@ try {
    }
 
   if (!$tripAdded) {
-     $stmt_addTrip= $connection->prepare('INSERT INTO Trip(km, boat_id, date) values (:km, :boatId, CURDATE())');
+     $stmt_addTrip= $connection->prepare('INSERT INTO Trip(km, boat_id, date) values (:km, :boatId, :dateStr)');
      $stmt_addTrip->bindParam(':km', $km);
      $stmt_addTrip->bindParam(':boatId', $boatId);
+     $stmt_addTrip->bindParam(':dateStr', $dateStr);
      $stmt_addTrip->execute();
 
      $trip_id = $connection->lastInsertId();
@@ -64,15 +67,6 @@ try {
          $stmt_addUserTrip->bindParam(':trip_id', $trip_id);
          $stmt_addUserTrip->execute();
       }
-
-     $stmt_addTripCoordinates= $connection->prepare('INSERT INTO Trip_coordinates(latitude,longitude,trip_id) values (:lat, :lon, :trip_id)');
-
-     for($i =0; $i < count($array_coordinates); $i++) {
-        $stmt_addTripCoordinates->bindParam(':lat', $array_coordinates[$i]["lat"]);
-        $stmt_addTripCoordinates->bindParam(':lon', $array_coordinates[$i]["lon"]);
-        $stmt_addTripCoordinates->bindParam(':trip_id', $trip_id);
-        $stmt_addTripCoordinates->execute();
-     }
   }
 
  

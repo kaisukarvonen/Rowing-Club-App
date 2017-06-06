@@ -15,7 +15,6 @@ var username = Observable();
 var password = Observable();
 var errorMessage = Observable("errorMessage");
 var errorPopup = Observable(false);
-var currentDate = Observable();
 var boatSelectionIsOpen = Observable(false);
 var boatOptions = Observable();
 var selectedBoat = Observable();
@@ -24,6 +23,10 @@ var selectedParticipant = Observable();
 var participantOptions = Observable();
 var participantArray = Observable();
 var chosenBoatFormatted = Observable({id: 0, name: 0, capacity: 0});
+var dateInput = Observable();
+var pastTripActive = Observable();
+var dateValue = Observable();
+var kilometerValue = Observable();
 
 var chosenParticipantsFormatted = Observable();
 
@@ -51,7 +54,7 @@ module.exports = {
         errorMessage: errorMessage,
         login: login,
 
-        currentDate: currentDate,
+        dateInput: dateInput,
         addTripPageActivated: onAddTripPage,
         boatSelectionIsOpen: boatSelectionIsOpen,
         openBoatSelection: openBoatSelection,
@@ -77,11 +80,11 @@ module.exports = {
 	        		participantNameClicked: function() {
 	        			selectedParticipant.value = option;
 	        			
-	        			if (!participantArray.contains(option) && chosenBoatFormatted.getAt(0).capacity > participantArray.length) {
+	        			if (!participantArray.contains(option) && chosenBoatFormatted.getAt(0).capacity-1 > participantArray.length) {
 	        				participantOptions.replaceAt(participantOptions.indexOf(option), "✓ "+option);
 	        				
 	        				participantArray.add("✓ "+option);
-	        			} else if (participantArray.contains(option) && chosenBoatFormatted.getAt(0).capacity >= participantArray.length) {
+	        			} else if (participantArray.contains(option) && chosenBoatFormatted.getAt(0).capacity-1 >= participantArray.length) {
 		        				participantOptions.replaceAt(participantOptions.indexOf(option), option.substring(2));
 		        				participantArray.remove(option);
 		        			
@@ -89,18 +92,21 @@ module.exports = {
 
 
 	        			if (participantArray.length > 1) {
-	        				selectedParticipant.value = participantArray.length + " participants";
+	        				selectedParticipant.value = participantArray.length + " participants + you";
 	        			} else if (participantArray.length === 0) {
 	        				selectedParticipant.value = "Choose participants";
 	        			} else {
-	        				selectedParticipant.value = "1 participant";
+	        				selectedParticipant.value = "1 participant + you";
 	        			}
 	        			
 	        			
         		}
         	}
         }),
-      
+      	
+      	kilometerValue: kilometerValue,
+      	dateValue: dateValue,
+      	pastTripActive: pastTripActive,
       	currentLatitude: currentLatitude,
       	currentLongitude: currentLongitude, 
         continuousLocation: continuousLocation,
@@ -109,6 +115,7 @@ module.exports = {
         immediateLocation: immediateLocation,
         recordTrip: recordTrip
 };
+
 
 function openParticipantSelection() {
 	participantSelectionIsOpen.value = !participantSelectionIsOpen.value;
@@ -119,9 +126,9 @@ function openBoatSelection() {
 	boatSelectionIsOpen.value = !boatSelectionIsOpen.value;
 }
 
-
 function onAddTripPage() {
-	showCurrentDateonAddTrip(currentDate);
+		showCurrentDateonAddTrip(dateInput);
+	
 }
 
 function showAddTrip() {
@@ -174,6 +181,7 @@ function addOptionsToBoatDropDownList(array, optionsObject) {
 
 function addOptionsToParticipantDropDownList(array, optionsObject) {
 	optionsObject.clear();
+	chosenParticipantsFormatted.clear();
 	var parsedDetails = getUserDetails("user_details.json");
 	for(var i=0; i<array.length; i++) {
 		if (array[i].username !== parsedDetails.username) {
@@ -272,10 +280,7 @@ function stopContinuousListener() {
     console.log(coordinatesString);
     console.log(idString);
 
-
-	console.log('http://www.scoctail.com/rowing_club/add_new_trip.php?boatId='+boatId+
-			'&coordinates='+coordinatesString+'&km='+fixedKm+'&participants='+idString);
-    /*
+    
     fetch('http://www.scoctail.com/rowing_club/add_new_trip.php?boatId='+boatId+
 			'&coordinates='+coordinatesString+'&km='+totalKm+'&participants='+idString, {
 	        method: 'GET'
@@ -284,17 +289,16 @@ function stopContinuousListener() {
 				status = response.status; 
 				console.log(status);
 				if (!response.ok) {
-					console.log("error");
+					if (status == 400) {
+						//trip already added
+					} else {
+						//error adding to database
+					}
 				}
 				return response.json();
 		})
 			.then(function(responseObject) {
-				//
-				console.log("here");
-
 	})
-*/
-	
 
 }
 
@@ -302,10 +306,15 @@ function stopContinuousListener() {
 
 //Record trip
 function recordTrip() {
+	
     createParticipantIdList(participantArray, participantIds);
 	if (chosenBoatFormatted.getAt(0).id != 0 && participantIds.length > 1) {
-		router.push("showCurrentTrip");
-    	startContinuousListener();
+		if (pastTripActive) {
+			savePastTrip();
+		} else {
+			router.push("showCurrentTrip");
+	    	startContinuousListener();
+	    }
 	} else {
 		//show alert box
 	}
@@ -317,6 +326,35 @@ GeoLocation.on("changed", function(location) {
 		coordinates.push({lat: location.latitude, lon: location.longitude});
 
 });
+
+function savePastTrip() {
+	var date = dateValue.value;
+	var kms = kilometerValue.value;
+	var boatId = chosenBoatFormatted.getAt(0).id;
+	var idString = JSON.stringify(participantIds);
+	console.log('http://www.scoctail.com/rowing_club/add_past_trip.php?boatId='+boatId+
+			'&km='+kms+'&participants='+idString+'&date='+date);
+/*
+	fetch('http://www.scoctail.com/rowing_club/add_past_trip.php?boatId='+boatId+
+			'&km='+totalKm+'&participants='+idString+'&date='+date, {
+	        method: 'GET'
+		})
+			.then(function(response) {
+				status = response.status; 
+				console.log(status);
+				if (!response.ok) {
+					if (status == 400) {
+						//trip already added
+					} else {
+						//error adding to database
+					}
+				}
+				return response.json();
+		})
+			.then(function(responseObject) {
+	})
+	*/
+}
 
 
 function calculateTotalDistance(array) {
@@ -339,7 +377,10 @@ function distanceBetweenTwoPoints(lat1, lon1, lat2, lon2) {
   return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
 }
 
-function createParticipantIdList(originalArray, idArray) {
+function createParticipantIdList(originalArray) {
+	clearedArray = [];
+	clearedArray.push(participantIds[0]);
+	participantIds = clearedArray;
 	originalArray.forEach(function(name,index) {
    		originalArray.replaceAt(index, name.substring(2));
     });
@@ -347,8 +388,11 @@ function createParticipantIdList(originalArray, idArray) {
     	for(var i=0; i < chosenParticipantsFormatted.length; i++) {
     		
     		if (chosenParticipantsFormatted.getAt(i).name === name) {
-    			idArray.push(chosenParticipantsFormatted.getAt(i).id);
+    			participantIds.push(chosenParticipantsFormatted.getAt(i).id);
+    			//console.log(chosenParticipantsFormatted.getAt(i).id);
     		}
     	}
     });
+
+
 }

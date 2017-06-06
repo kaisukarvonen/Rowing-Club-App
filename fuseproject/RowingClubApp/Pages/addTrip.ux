@@ -7,24 +7,51 @@
 			<Panel Width="100" Margin="30,20,190,0">
 				<Text TextColor="White">Past trip</Text>
 			
-				<Switch ux:Name="_sw" Margin="220,0,0,0">
-			        <WhileTrue Value="{ReadProperty _sw.Value}">
-			            <DebugAction Message="Switch.Value = true" />
+				
+				<Switch ux:Name="pastTripSwitch" Margin="220,0,0,0" Value="{pastTripActive}">
+			        <WhileTrue Value="{ReadProperty pastTripSwitch.Value}">
+			            <DebugAction Message="pastTrip Mode on" />
+			            <Change date.IsEnabled="true" />
+			            <Change date.PlaceholderText="type date..." />
+			            <Change date.PlaceholderColor="#aaa" />
+			            <Change dateRectangle.Color="#ccc" />
+			            <Change startTripText.Value="Save trip" />
+			            <Change kilometerPanel.Visibility="Visible" />
+			            <Change kilometerPanel.Margin="30,25,190,0" />
+			            <Change datePanel.Margin="30,25,190,0" />
 			        </WhileTrue>
 	    		</Switch>
-    		</Panel>
+
+	    		    <!--<Switch ux:Name="switch1" Margin="220,0,0,0" Value="{pastTripActive}"/>
+
+    <Button>
+        <Clicked>
+            <Toggle Target="switch1" />
+            <Callback Handler="{toggleTripMode}"/> 
+        </Clicked>
+    </Button>-->
+	    	</Panel>
 
     		
-    	<Panel Width="100" Margin="30,25,190,0">
+    	<Panel ux:Name="datePanel" Width="100" Margin="30,25,190,-20">
 			<Text TextColor="#fff">Date</Text>
-			   <TextInput ux:Name="date" PlaceholderText="{currentDate}" PlaceholderColor="#ccc" Height="35" Padding="13,3,3,3" Width="110" Margin="200,0,0,0" IsEnabled="false" Alignment="Center">
-			     <Rectangle Layer="Background" Color="#999" CornerRadius="4">
+			   <TextInput ux:Name="date" PlaceholderText="{dateInput}" PlaceholderColor="#ccc" Height="35" Padding="13,3,3,3" Width="110" Margin="200,-10,0,0" IsEnabled="false" Alignment="Center" Value="{dateValue}">
+			     <Rectangle ux:Name="dateRectangle" Layer="Background" Color="#999" CornerRadius="4">
 			        <Stroke Width="2" Brush="#BBB" />
 			     </Rectangle>
 			   </TextInput>
 				
     	</Panel>
 
+    	<Panel ux:Name="kilometerPanel" Width="100" Margin="0" Visibility="Hidden">
+			<Text TextColor="#fff">Kilometers</Text>
+			   <TextInput ux:Name="kilometer" PlaceholderText="type kms..." PlaceholderColor="#aaa" Height="35" Padding="13,3,3,3" Width="110" Margin="200,-10,0,0" Alignment="Center" Value="{kilometerValue}">
+			     <Rectangle Layer="Background" Color="#ccc" CornerRadius="4">
+			        <Stroke Width="2" Brush="#BBB" />
+			     </Rectangle>
+			   </TextInput>
+				
+    	</Panel>
 
     	<Panel ux:Name="boatCombobox" Color="#ccc" Margin="55,25,60,0" Alignment="Top">
     		<Panel ux:Name="boatHeader" Clicked="{openBoatSelection}" HitTestMode="LocalBoundsAndChildren">
@@ -93,21 +120,23 @@
     	</Panel>
 
 
+
     		
 
-			<Panel Margin="20,40,20,0" Clicked="{recordTrip}">
-				<Text Value="Start trip" TextColor="White" Alignment="Center"/>
-				<Rectangle CornerRadius="4" Layer="Background" Color="#25a" Height="40"/>
+			<Panel ux:Name="startTrip" Margin="20,40,20,0" Clicked="{recordTrip}">
+				<Text ux:Name="startTripText" Value="Start tracking trip" TextColor="White" Alignment="Center"/>
+				<Rectangle ux:Name="startTripRectangle" CornerRadius="4" Layer="Background" Color="#25a" Height="40"/>
+				<WhilePressed>
+			    		<Change startTripRectangle.Color="#18a" Duration="0.5"/>
+			    </WhilePressed>
 			</Panel>
-			<Panel Margin="20,40,20,0" Clicked="{stopContinuousListener}">
+			<!--<Panel Margin="20,40,20,0" Clicked="{stopContinuousListener}">
 				<Text Value="Stop trip" TextColor="White" Alignment="Center"/>
 				<Rectangle CornerRadius="4" Layer="Background" Color="#25a" Height="40"/>
-			</Panel>
+			</Panel>-->
 			<Panel>
 				<Text TextColor="White" Margin="20, 30, 0, 0">Location (reloads every 10 seconds):</Text>
 				<Text TextColor="White" Margin="20, 50, 0, 0" Value="{continuousLocation}" />
-
-				<Text TextColor="White" Margin="20, 90, 0, 0" Value="{immediateLocation}" />
 			</Panel>
 		</StackPanel>
 	</ScrollView>
