@@ -38,13 +38,15 @@ try {
    if (count($searchResult > 0)) {
       for($i =0; $i < count($searchResult); $i++) {
         $stmt_searchUserTrip = $connection->prepare('SELECT user_id FROM User_trip WHERE trip_id=:trip_id');
-        $stmt_searchUserTrip->bindParam(':trip_id', $searchResult[i]["id"]);
+        $stmt_searchUserTrip->bindParam(':trip_id', $searchResult[$i]["id"]);
         $stmt_searchUserTrip->execute();
-        $trip_userList=$stmt_searchUserTrip->fetchAll();
-        if (count($trip_userList) == count($array_participants) && sort($trip_userList) == $array_participants) {
-          $tripAdded = true;
-          header('HTTP/1.0 400 Trip Already Added');
-          break;
+        $trip_userList=$stmt_searchUserTrip->fetchAll(PDO::FETCH_COLUMN, 0);
+        sort($trip_userList);
+        if (count($trip_userList) == count($array_participants) && $trip_userList == $array_participants) {
+           $tripAdded = true;
+           header('HTTP/1.0 400 Trip Already Added');
+           //echo "already added";
+           break;
         }
       }
    }
@@ -77,8 +79,8 @@ try {
 
  
 } catch (PDOException $e) {
-   //header('HTTP/1.0 500 Internal Server Error');
-   echo $e->getMessage(). " ---- on line ".$e->getLine();
+   header('HTTP/1.0 500 Internal Server Error');
+   //echo $e->getMessage(). " ---- on line ".$e->getLine();
 }
 
 
