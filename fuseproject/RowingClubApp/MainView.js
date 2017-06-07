@@ -24,7 +24,7 @@ var participantOptions = Observable();
 var participantArray = Observable();
 var chosenBoatFormatted = Observable({id: 0, name: 0, capacity: 0});
 var dateInput = Observable();
-var pastTripActive = Observable();
+var pastTripActive = Observable(false);
 var dateValue = Observable();
 var kilometerValue = Observable();
 
@@ -43,7 +43,10 @@ module.exports = {
         	
         },
         gotoSettings: function() {router.push("settings");},
-        gotoLogbook: function() {router.push("logbook");},
+        gotoLogbook: function() {
+        	router.push("logbook");
+        	showLogbook();
+        },
         gotoStatistics: function() {router.push("statistics");},
         gotoRanking: function() {router.push("ranking");},
         goBack: function() { router.goBack();},
@@ -113,7 +116,8 @@ module.exports = {
         startContinuousListener: startContinuousListener,
         stopContinuousListener: stopContinuousListener,
         immediateLocation: immediateLocation,
-        recordTrip: recordTrip
+        recordTrip: recordTrip,
+
 };
 
 
@@ -130,6 +134,26 @@ function onAddTripPage() {
 		showCurrentDateonAddTrip(dateInput);
 	
 }
+
+function showLogbook() {
+	var parsedDetails = getUserDetails("user_details.json");
+
+	fetch('http://www.scoctail.com/rowing_club/show_logbook.php?userId='+parsedDetails.id, {
+	        method: 'GET'
+		})
+			.then(function(response) {
+				status = response.status; 
+				console.log(status);
+				if (!response.ok) {
+					console.log("error");
+				}
+				return response.json();
+		})
+			.then(function(responseObject) {
+				//show trips as a list on logbook page
+		})
+}
+
 
 function showAddTrip() {
 		participantArray.clear();
@@ -261,6 +285,7 @@ function startContinuousListener() {
     GeoLocation.startListening(intervalMs, desiredAccuracyInMeters);
 }
 
+
 var coordinates = [];
 
 //Stop function for continious location
@@ -268,9 +293,6 @@ function stopContinuousListener() {
     GeoLocation.stopListening();
 
     var boatId = chosenBoatFormatted.getAt(0).id;
-	coordinates.push({lat: "60.26898181", lon: "24.46944416"});
-	coordinates.push({lat: "60.23503919", lon: "24.58250999"});
-	coordinates.push({lat: "60.21398306", lon: "24.66679573"});
 	
 	var totalKm = calculateTotalDistance(coordinates);
 	var fixedKm = totalKm.toFixed(1);
@@ -282,7 +304,7 @@ function stopContinuousListener() {
 
     
     fetch('http://www.scoctail.com/rowing_club/add_new_trip.php?boatId='+boatId+
-			'&coordinates='+coordinatesString+'&km='+totalKm+'&participants='+idString, {
+			'&coordinates='+coordinatesString+'&km='+fixedKm+'&participants='+idString, {
 	        method: 'GET'
 		})
 			.then(function(response) {
@@ -290,15 +312,16 @@ function stopContinuousListener() {
 				console.log(status);
 				if (!response.ok) {
 					if (status == 400) {
-						//trip already added
+						console.log("trip already added");
 					} else {
-						//error adding to database
+						console.log("error");
 					}
+				} else {
+					gotoStatistics();
 				}
 				return response.json();
 		})
-			.then(function(responseObject) {
-	})
+
 
 }
 
@@ -306,13 +329,16 @@ function stopContinuousListener() {
 
 //Record trip
 function recordTrip() {
-	
+	console.log(pastTripActive.value);
     createParticipantIdList(participantArray, participantIds);
 	if (chosenBoatFormatted.getAt(0).id != 0 && participantIds.length > 1) {
-		if (pastTripActive) {
-			savePastTrip();
-		} else {
+		if (pastTripActive.value == true) {
+			//savePastTrip();
+			console.log("past");
+		} else if (pastTripActive.value == false) {
+			console.log("new");
 			router.push("showCurrentTrip");
+			coordinates = [];
 	    	startContinuousListener();
 	    }
 	} else {
@@ -328,15 +354,14 @@ GeoLocation.on("changed", function(location) {
 });
 
 function savePastTrip() {
-	var date = dateValue.value;
+	var date = dateValue.value; //format yyyy-mm-dd
 	var kms = kilometerValue.value;
 	var boatId = chosenBoatFormatted.getAt(0).id;
 	var idString = JSON.stringify(participantIds);
-	console.log('http://www.scoctail.com/rowing_club/add_past_trip.php?boatId='+boatId+
-			'&km='+kms+'&participants='+idString+'&date='+date);
-/*
+	console.log(idString);
+
 	fetch('http://www.scoctail.com/rowing_club/add_past_trip.php?boatId='+boatId+
-			'&km='+totalKm+'&participants='+idString+'&date='+date, {
+			'&km='+kms+'&participants='+idString+'&date='+date, {
 	        method: 'GET'
 		})
 			.then(function(response) {
@@ -344,16 +369,15 @@ function savePastTrip() {
 				console.log(status);
 				if (!response.ok) {
 					if (status == 400) {
-						//trip already added
+						console.log("trip already added");
 					} else {
 						//error adding to database
+						console.log("error");
 					}
 				}
 				return response.json();
 		})
-			.then(function(responseObject) {
-	})
-	*/
+	
 }
 
 

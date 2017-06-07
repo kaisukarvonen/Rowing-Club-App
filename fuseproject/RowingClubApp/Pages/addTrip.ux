@@ -21,15 +21,6 @@
 			            <Change datePanel.Margin="30,25,190,0" />
 			        </WhileTrue>
 	    		</Switch>
-
-	    		    <!--<Switch ux:Name="switch1" Margin="220,0,0,0" Value="{pastTripActive}"/>
-
-    <Button>
-        <Clicked>
-            <Toggle Target="switch1" />
-            <Callback Handler="{toggleTripMode}"/> 
-        </Clicked>
-    </Button>-->
 	    	</Panel>
 
     		
@@ -129,14 +120,6 @@
 				<WhilePressed>
 			    		<Change startTripRectangle.Color="#18a" Duration="0.5"/>
 			    </WhilePressed>
-			</Panel>
-			<!--<Panel Margin="20,40,20,0" Clicked="{stopContinuousListener}">
-				<Text Value="Stop trip" TextColor="White" Alignment="Center"/>
-				<Rectangle CornerRadius="4" Layer="Background" Color="#25a" Height="40"/>
-			</Panel>-->
-			<Panel>
-				<Text TextColor="White" Margin="20, 30, 0, 0">Location (reloads every 10 seconds):</Text>
-				<Text TextColor="White" Margin="20, 50, 0, 0" Value="{continuousLocation}" />
 			</Panel>
 		</StackPanel>
 	</ScrollView>

@@ -1,15 +1,26 @@
 <Page ux:Class="showCurrentTrip">
-	<ClientPanel>
+	<!--<ClientPanel>
 		<NativeViewHost>
 			<MapView Latitude="{currentLatitude}" Longitude="{currentLongitude}" Zoom="10">
 				<MapMarker Latitude="{currentLatitude}" Longitude="{currentLongitude}" Label="Fuse HQ"/>
 			</MapView>
 		</NativeViewHost>
-	</ClientPanel>
+	</ClientPanel>-->
 
-				<Panel Margin="20,40,20,0" Clicked="{stopContinuousListener}">
-				<Text Value="Stop trip" TextColor="White" Alignment="Center"/>
-				<Rectangle CornerRadius="4" Layer="Background" Color="#25a" Height="40"/>
+
+
+	<Panel Margin="20,20,20,0" Clicked="{stopContinuousListener}">
+		<Text Value="Stop trip" TextColor="White" Alignment="Center"/>
+		<Rectangle ux:Name="stopTripRectangle" CornerRadius="4" Layer="Background" Color="#25a" Height="40"/>
+		<WhilePressed>
+			<Change stopTripRectangle.Color="#18a" Duration="0.5"/>
+		</WhilePressed>
+	</Panel>
+
+
+			<Panel>
+				<Text TextColor="White" Margin="40, 70, 0, 0">Location:
+				</Text>
+				<Text TextColor="White" Margin="20, 95, 20, 0" Value="{currentLatitude}, {currentLongitude}" />
 			</Panel>
-
 </Page>
