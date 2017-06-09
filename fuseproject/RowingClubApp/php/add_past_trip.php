@@ -66,6 +66,14 @@ try {
          $stmt_addUserTrip->bindParam(':trip_id', $trip_id);
          $stmt_addUserTrip->execute();
       }
+
+    $stmt_addUserKm= $connection->prepare('UPDATE User SET all_kms=all_kms+:km WHERE id=:user_id');
+    for($i =0; $i < count($array_participants); $i++) {
+      $stmt_addUserKm->bindParam(':user_id', $array_participants[$i]);
+      $stmt_addUserTrip->bindParam(':km', $km);
+      $stmt_addUserTrip->execute();
+    }
+
   }
 
  

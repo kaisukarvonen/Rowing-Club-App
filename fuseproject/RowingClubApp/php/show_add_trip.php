@@ -29,13 +29,8 @@ try {
    $user_result =$stmt_user->fetchAll(PDO::FETCH_ASSOC);
    $boat_result =$stmt_boat->fetchAll(PDO::FETCH_ASSOC);
    
-   if ($user_result && $boat_result) {
-      $array=json_encode(array('Users' => $user_result , 'Boats' => $boat_result)); 
-      echo $array;
-   } else {
-      header('HTTP/1.0 400 Bad Request');
-   }
-
+   $array=json_encode(array('Users' => $user_result , 'Boats' => $boat_result)); 
+   echo $array;
  
 } catch (PDOException $e) {
    header('HTTP/1.0 500 Internal Server Error');

@@ -27,6 +27,7 @@ var dateInput = Observable();
 var pastTripActive = Observable(false);
 var dateValue = Observable();
 var kilometerValue = Observable();
+var trips = Observable();
 
 var chosenParticipantsFormatted = Observable();
 
@@ -46,6 +47,7 @@ module.exports = {
         gotoLogbook: function() {
         	router.push("logbook");
         	showLogbook();
+
         },
         gotoStatistics: function() {router.push("statistics");},
         gotoRanking: function() {router.push("ranking");},
@@ -106,6 +108,16 @@ module.exports = {
         		}
         	}
         }),
+
+        trips: trips.map(function(trip) {
+        	return {
+        		id: trip.id,
+        		km: trip.km,
+        		date: trip.date,
+        		boatName: trip.boatName
+        		//boatName: boat_name
+        	}
+        }),
       	
       	kilometerValue: kilometerValue,
       	dateValue: dateValue,
@@ -150,7 +162,14 @@ function showLogbook() {
 				return response.json();
 		})
 			.then(function(responseObject) {
-				//show trips as a list on logbook page
+				trips.clear();
+
+				for(var i=0; i<responseObject.Trips.length; i++) {
+					trips.add({id: responseObject.Trips[i].id, km: responseObject.Trips[i].km, date: responseObject.Trips[i].date,
+						boatName: responseObject.Trips[i].boat_name});
+				}
+
+
 		})
 }
 

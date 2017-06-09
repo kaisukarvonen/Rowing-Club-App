@@ -14,11 +14,16 @@ $dbname=$config->get("database")->get("dbname");
 
 
 try {
-   $connection = new PDO("mysql:host=$servername;dbname=$dbname", $dbusername, $dbpassword);
-   $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-   SELECT id, km, date FROM Trip
-   JOIN ?
+  $connection = new PDO("mysql:host=$servername;dbname=$dbname", $dbusername, $dbpassword);
+  $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  $stmt_searchUserTrips = $connection->prepare('SELECT Trip.id, Trip.km, Trip.date, Boat.name as boat_name FROM Trip
+  JOIN User_trip ON Trip.id = User_trip.trip_id AND User_trip.user_id=:userId JOIN Boat ON Trip.boat_id= Boat.id');
+  $stmt_searchUserTrips->bindParam(':userId', $userId);
+  $stmt_searchUserTrips->execute();
+  $searchResult = $stmt_searchUserTrips->fetchAll();
+  
+  $array=json_encode(array('Trips' => $searchResult)); 
+  echo $array;
    
 } catch (PDOException $e) {
    header('HTTP/1.0 500 Internal Server Error');
