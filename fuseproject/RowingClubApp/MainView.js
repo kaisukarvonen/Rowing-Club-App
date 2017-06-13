@@ -28,6 +28,7 @@ var pastTripActive = Observable(false);
 var dateValue = Observable();
 var kilometerValue = Observable();
 var trips = Observable();
+var ranking = Observable();
 
 var chosenParticipantsFormatted = Observable();
 
@@ -50,7 +51,10 @@ module.exports = {
 
         },
         gotoStatistics: function() {router.push("statistics");},
-        gotoRanking: function() {router.push("ranking");},
+        gotoRanking: function() {
+        	router.push("ranking");
+        	showRanking();
+        },
         goBack: function() { router.goBack();},
         detailEntry: function() {router.push("logbookEntry");},
         username: username,
@@ -119,6 +123,14 @@ module.exports = {
         	}
         }),
       	
+        ranking: ranking.map(function(person) {
+        	return {
+        		rank: person.rank,
+        		km: person.km,
+        		name: person.name
+        	}
+        }),
+
       	kilometerValue: kilometerValue,
       	dateValue: dateValue,
       	pastTripActive: pastTripActive,
@@ -146,6 +158,35 @@ function onAddTripPage() {
 		showCurrentDateonAddTrip(dateInput);
 	
 }
+
+
+function showRanking() {
+	var parsedDetails = getUserDetails("user_details.json");
+
+	fetch('http://www.scoctail.com/rowing_club/show_ranking.php?clubId='+parsedDetails.club_id, {
+	        method: 'GET'
+		})
+			.then(function(response) {
+				status = response.status; 
+				console.log(status);
+				if (!response.ok) {
+					console.log("error");
+				}
+				return response.json();
+		})
+			.then(function(responseObject) {
+				ranking.clear();
+
+				for(var i=0; i<responseObject.UserList.length; i++) {
+					ranking.add({rank: [i+1], km: responseObject.UserList[i].km, 
+						name: responseObject.UserList[i].firstname + responseObject.UserList[i].lastname});
+				}
+
+
+		})
+}
+
+
 
 function showLogbook() {
 	var parsedDetails = getUserDetails("user_details.json");
