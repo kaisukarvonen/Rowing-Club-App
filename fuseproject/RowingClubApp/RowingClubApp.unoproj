@@ -16,6 +16,14 @@
   "Android": {
      "Geo": {
           "ApiKey": "AIzaSyDhk6QIiJdJd456137NRs2uPN3IrKOvIzk"
-      }
+      },
+    "Icons": {
+      "LDPI": "Assets/AppIcons/android_hdpi.png",
+      "MDPI": "Assets/AppIcons/android_mdpi.png",
+      "HDPI": "Assets/AppIcons/android_hdpi.png",
+      "XHDPI": "Assets/AppIcons/android_xhdpi.png",
+      "XXHDPI": "Assets/AppIcons/android_xxhdpi.png",
+      "XXXHDPI": "Assets/AppIcons/android_xxxhdpi.png"
+    }
   }
 }
