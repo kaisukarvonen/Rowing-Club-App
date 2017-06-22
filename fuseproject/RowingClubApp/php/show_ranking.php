@@ -20,8 +20,8 @@ try {
 
    $tripAdded = false;
 
-   $stmt_searchUsers = $connection->prepare('SELECT firstname, lastname, all_kms FROM User WHERE user_id=:userId');
-   $stmt_searchUsers->bindParam(':userId', $userId);
+   $stmt_searchUsers = $connection->prepare('SELECT firstname, lastname, all_kms FROM User WHERE club_id=:clubId ORDER BY all_kms DESC');
+   $stmt_searchUsers->bindParam(':clubId', $clubId);
    $stmt_searchUsers->execute();
    $searchResult=$stmt_searchUsers->fetchAll();
 

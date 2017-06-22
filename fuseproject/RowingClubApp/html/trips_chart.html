@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="js/Chart.bundle.js"></script>
+<script src="js/utils.js"></script>
+</head>
+
+<body>
+<canvas id="myChart"></canvas>
+
+
+
+
+<script>
+var trips = [];
+
+window.onload = function(){ 
+	trips = [];
+	var userId = getUrlParameter();
+	
+	$.post("show_trips_chart.php", {
+			userId: userId
+		}, function (jsonTrips) {
+			var parsedtrips = JSON.parse(jsonTrips);
+			var formatted = parsedtrips.Trips;
+			//console.log(parsed);
+			for (var i=0; i<formatted.length; i++) {
+				trips.push({km:formatted[i].sum_km, date:formatted[i].fdate});
+			}
+			console.log(trips[0].date);
+			
+			showChart();
+			
+		}).fail(function(xhr) {
+				//do something
+		})
+ 
+}
+
+function getUrlParameter() {
+	var url = window.location.href;
+	userId = url.substring(url.length-1);
+	console.log(userId);
+	return userId;
+}
+
+
+function showChart() {
+
+	var ctx = document.getElementById('myChart').getContext('2d');
+	ctx.canvas.height = 1000;
+	var chart = new Chart(ctx, {
+		// The type of chart we want to create
+		type: 'bar',
+
+		// The data for our dataset
+		
+		data: {
+			labels: [trips[0].date, trips[1].date, trips[2].date, trips[3].date],
+			datasets: [{
+				label: "Trips past 4 months",
+				backgroundColor: '#25a',
+				borderColor: '#249',
+				data: [trips[0].km, trips[1].km, trips[2].km, trips[3].km]
+			}]
+		},
+
+		// Configuration options go here
+		options: {
+		    responsive: true,
+			maintainAspectRatio: false,
+
+			scales: {
+				xAxes: [{
+					categoryPercentage: 0.8,
+					gridLines: {
+						
+					}
+				}]
+			}
+		}
+	});
+}
+
+</script>
+
+
+</body>
+</html>

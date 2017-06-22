@@ -6,19 +6,10 @@
 				<StackPanel>
 					<Each Items="{ranking}">
 						<StackPanel>
-							<Text Value="{rank}. &emsp; {name} &emsp; {km} km" Color="#fff" Margin="0,0,0,30"/>
+							<Text Value="{rank}. {name} -- {km} km" Color="#fff" Margin="0,0,0,30"/>
 					  </StackPanel>
 					</Each>
 				</StackPanel>
-
-
-			
-
-			<!--<Panel Margin="20,40,20,0" Clicked="{detailEntry}">
-				<Text Value="Detail of a log" TextColor="White" Alignment="Center"/>
-				<Rectangle CornerRadius="4" Layer="Background" Color="#25a" Height="40"/>
-			</Panel>-->
-
 
 		</StackPanel>
 	</ScrollView>

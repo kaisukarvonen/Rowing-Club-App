@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="Chart.js"></script>
+<script src="utils.js"></script>
+</head>
+
+<body>
+<canvas id="myChart"></canvas>
+
+
+
+
+<script>
+var trips = [];
+
+	var ctx = document.getElementById('myChart').getContext('2d');
+	ctx.canvas.height = 1100;
+	var chart = new Chart(ctx, {
+		// The type of chart we want to create
+		type: 'bar',
+
+		// The data for our dataset
+		
+		data: {
+			labels: ['03/2017','04/2017', '05/2017', '06/2017'],
+			datasets: [{
+				label: "Trips past 4 months",
+				backgroundColor: '#25a',
+				borderColor: '#249',
+				data: [30, 12, 50, 22]
+			}]
+		},
+
+		// Configuration options go here
+		options: {
+
+		    responsive: true,
+			maintainAspectRatio: false,
+
+			scales: {
+				xAxes: [{
+					categoryPercentage: 0.6,
+					gridLines: {
+						
+					}
+				}]
+			}
+		}
+	});
+
+
+</script>
+
+
+</body>
+</html>

@@ -29,6 +29,7 @@ var dateValue = Observable();
 var kilometerValue = Observable();
 var trips = Observable();
 var ranking = Observable();
+var statisticsUrl = Observable();
 
 var chosenParticipantsFormatted = Observable();
 
@@ -50,7 +51,12 @@ module.exports = {
         	showLogbook();
 
         },
-        gotoStatistics: function() {router.push("statistics");},
+        gotoStatistics: function() {
+        	router.push("statistics");
+        	var parsedDetails = getUserDetails("user_details.json");
+        	statisticsUrl.value = "http://scoctail.com/rowing_club/trips_chart.html?user_id="+parsedDetails.id;
+        	console.log(statisticsUrl.value);
+        },
         gotoRanking: function() {
         	router.push("ranking");
         	showRanking();
@@ -62,6 +68,7 @@ module.exports = {
         errorPopup_visible: errorPopup,
         errorMessage: errorMessage,
         login: login,
+        statisticsUrl: statisticsUrl,
 
         dateInput: dateInput,
         addTripPageActivated: onAddTripPage,
@@ -140,8 +147,7 @@ module.exports = {
         startContinuousListener: startContinuousListener,
         stopContinuousListener: stopContinuousListener,
         immediateLocation: immediateLocation,
-        recordTrip: recordTrip,
-
+        recordTrip: recordTrip
 };
 
 
@@ -178,8 +184,8 @@ function showRanking() {
 				ranking.clear();
 
 				for(var i=0; i<responseObject.UserList.length; i++) {
-					ranking.add({rank: [i+1], km: responseObject.UserList[i].km, 
-						name: responseObject.UserList[i].firstname + responseObject.UserList[i].lastname});
+					ranking.add({rank:i+1, km: responseObject.UserList[i].all_kms, 
+						name: responseObject.UserList[i].firstname + " " +responseObject.UserList[i].lastname});
 				}
 
 
@@ -206,7 +212,7 @@ function showLogbook() {
 				trips.clear();
 
 				for(var i=0; i<responseObject.Trips.length; i++) {
-					trips.add({id: responseObject.Trips[i].id, km: responseObject.Trips[i].km, date: responseObject.Trips[i].date,
+					trips.add({id: responseObject.Trips[i].id, km: responseObject.Trips[i].km, date: responseObject.Trips[i].fdate,
 						boatName: responseObject.Trips[i].boat_name});
 				}
 
