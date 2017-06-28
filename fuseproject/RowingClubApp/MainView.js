@@ -44,7 +44,7 @@ module.exports = {
         	showAddTrip();
         	
         },
-        gotoSettings: function() {router.push("settings");},
+        gotoInfo: function() {router.push("info");},
         gotoLogbook: function() {
         	router.push("logbook");
         	showLogbook();
