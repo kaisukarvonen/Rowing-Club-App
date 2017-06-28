@@ -1,0 +1,23 @@
+<Page ux:Class="info">
+	<ScrollView>
+		<StackPanel Layer="Overlay">
+			<Header Margin="0, 10, 0, 10">Info</Header>
+			<Panel>
+				<Text Margin="30,10,30,0" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" TextColor="White">
+					With this App you can track your kilometers in a rowing club or similar sports club. Use the Plus-Button in the upper left corner to start a trip. You can choose a boat and your crew. When you start the tracking, your kilometers are automatically recorded using GPS. But you can also add a past trip and add the kilometers manually. All trips can be viewd in the logbook. You will also find a ranking in the App to see who has the most kilometers. 
+				</Text>
+			</Panel>
+			<Panel>
+				<Text Margin="30,10,30,0" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" TextColor="White">
+					An App by Kaisu Karvonen and Johannes Nolte at FH Joanneum Kapfenberg 2017. 
+				</Text>
+			</Panel>
+			<Panel>
+				<Text Margin="30,10,30,0" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" TextColor="White">
+					Icon Licenses: Rowing pictogram made by Freepik from Flaticon is licensed by (http://creativecommons.org/licenses/by/3.0/). Info Icon made by Lucy G. from Flaticon is licensed by (http://creativecommons.org/licenses/by/3.0/). Logbook Icon made by Chris Veigt from Flaticon is licensed by (http://creativecommons.org/licenses/by/3.0/). Three Bars made by Plainicon from Flaticon is licensed by (http://creativecommons.org/licenses/by/3.0/). Ranking Icon made by Freepik from Flaticon is licensed by (http://creativecommons.org/licenses/by/3.0/).					
+				</Text>
+			</Panel>
+			<Panel Margin="50, 0, 0, 0" Height="100"/>
+		</StackPanel>
+	</ScrollView>
+</Page>

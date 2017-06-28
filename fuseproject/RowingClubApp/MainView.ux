@@ -19,8 +19,8 @@
             <Page ux:Template="addTrip">
                 <addTrip />
             </Page>
-            <Page ux:Template="settings">
-                <settings />
+            <Page ux:Template="info">
+                <info />
             </Page>
 
             <Page ux:Template="showCurrentTrip">
@@ -61,7 +61,7 @@
                 <Image ux:Name="addTripButton" Alignment="Left" Color="Gray" Width="20%" Height="70%" File="Assets/add.png" Clicked="{gotoAddTrip}" />
             </Panel>
             <Panel Background="White">
-                <Image ux:Name="settingsButton"  Alignment="Right" Color="Gray" Width="20%" Height="70%" File="Assets/settings.png" Clicked="{gotoSettings}"/>
+                <Image ux:Name="infoButton"  Alignment="Right" Color="Gray" Width="20%" Height="70%" File="Assets/info.png" Clicked="{gotoInfo}"/>
             </Panel>
         </Grid>
         <!-- BottomBar Navigation -->
