@@ -1,13 +1,34 @@
 <Page ux:Class="logbookEntry">
-	<ScrollView>
-		<StackPanel Layer="Overlay">
-			<Header Margin="0, 10, 0, 10">Details of a trip</Header>
-			<Panel>
-				<Text Margin="30,10,30,0" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" TextColor="White">
-					Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-				</Text>
-			</Panel>
-			<Panel Margin="50, 0, 0, 0" Height="100"/>
+
+	<WhileTrue Value="{tripRoutePanelVisible}">
+		<Change tripRoutePanel.Visibility="Visible" />
+		<Change tripParticipantsPanel.Visibility="Hidden" />
+	</WhileTrue>
+
+	<DockPanel ux:Name="tripRoutePanel" Margin="20,55,20,20" Visibility="Hidden">
+		<Header Margin="0, -38, 0, 30">Trip details</Header>
+     
+	    <NativeViewHost>
+	        <WebView Url="{logbookEntryUrl}">
+	        </WebView>
+	    </NativeViewHost>
+	</DockPanel>
+
+
+		<ScrollView>
+		<StackPanel ux:Name="tripParticipantsPanel" Layer="Overlay" Margin="40,10,0,0" Visibility="Visible">	
+			<Header Margin="-40, 10, 0, 30">Trip details</Header>
+				<Text Value="Trip participants:" Color="#eee" Margin="0,0,0,22" FontSize="18"/>
+				<StackPanel>
+					<Each Items="{tripParticipants}">
+						<StackPanel>
+							<Text Value="{name}" Color="#fff" Margin="0,0,0,15" FontSize="16"/>
+					  </StackPanel>
+					</Each>
+				</StackPanel>
+
 		</StackPanel>
 	</ScrollView>
+	
+
 </Page>

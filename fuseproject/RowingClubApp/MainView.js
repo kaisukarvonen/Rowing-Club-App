@@ -29,7 +29,10 @@ var dateValue = Observable();
 var kilometerValue = Observable();
 var trips = Observable();
 var ranking = Observable();
+var tripParticipants = Observable();
 var statisticsUrl = Observable();
+var logbookEntryUrl = Observable();
+var tripRoutePanelVisible = Observable(false);
 
 var chosenParticipantsFormatted = Observable();
 
@@ -52,9 +55,10 @@ module.exports = {
 
         },
         gotoStatistics: function() {
-        	router.push("statistics");
         	var parsedDetails = getUserDetails("user_details.json");
         	statisticsUrl.value = "http://scoctail.com/rowing_club/trips_chart.html?user_id="+parsedDetails.id;
+        	router.push("statistics");
+
         	console.log(statisticsUrl.value);
         },
         gotoRanking: function() {
@@ -62,7 +66,6 @@ module.exports = {
         	showRanking();
         },
         goBack: function() { router.goBack();},
-        detailEntry: function() {router.push("logbookEntry");},
         username: username,
         password: password,
         errorPopup_visible: errorPopup,
@@ -138,6 +141,15 @@ module.exports = {
         	}
         }),
 
+        tripParticipants: tripParticipants.map(function(participant) {
+        	return {
+        		name: participant.name
+        	}
+        }),
+
+        tripRoutePanelVisible: tripRoutePanelVisible,
+        tripClicked: tripClicked,
+        logbookEntryUrl: logbookEntryUrl,
       	kilometerValue: kilometerValue,
       	dateValue: dateValue,
       	pastTripActive: pastTripActive,
@@ -149,6 +161,62 @@ module.exports = {
         immediateLocation: immediateLocation,
         recordTrip: recordTrip
 };
+
+function tripClicked(args) {
+    var tripId = args.data.id;
+    
+    router.push("logbookEntry");
+    
+    
+    fetch('http://www.scoctail.com/rowing_club/check_for_coordinates.php?tripId='+tripId, {
+	        method: 'GET'
+		})
+			.then(function(response) {
+				status = response.status; 
+				console.log(status);
+				if (!response.ok) {
+					console.log("error");
+				}
+				return response.json();
+		})
+			.then(function(responseObject) {
+				if (responseObject == 0) {
+					//means there are no coordinates entered for this trip
+					tripRoutePanelVisible.value = false;
+					showTripParticipants(tripId);
+				} else {
+					logbookEntryUrl.value = "http://scoctail.com/rowing_club/trip_route.html?tripId="+tripId;
+					tripRoutePanelVisible.value = true;
+				}
+				router.push("logbookEntry");
+		})
+      
+}
+
+function showTripParticipants(trip_id) {
+	fetch('http://www.scoctail.com/rowing_club/list_trip_participants.php?tripId='+trip_id, {
+	        method: 'GET'
+		})
+			.then(function(response) {
+				status = response.status; 
+				console.log(status);
+				if (!response.ok) {
+					console.log("showTripParticipants: error");
+				}
+				return response.json();
+		})
+			.then(function(responseObject) {
+
+				tripParticipants.clear();
+
+				for(var i=0; i<responseObject.TripParticipants.length; i++) {
+					tripParticipants.add({name:responseObject.TripParticipants[i].firstname + " " + 
+						responseObject.TripParticipants[i].lastname});
+				}
+
+				router.push("logbookEntry");
+		})
+}
 
 
 function openParticipantSelection() {
@@ -321,8 +389,10 @@ function login() {
 				var saveUserDetails = Storage.writeSync("user_details.json", JSON.stringify(responseObject));
 				if(saveUserDetails) {
 					console.log("saved");
-					//gotoStatistics(); //this does not work ??
+					
+					statisticsUrl.value = "http://scoctail.com/rowing_club/trips_chart.html?user_id="+responseObject.id;
 					router.push("statistics");
+					
 				} else {
 					console.log("saveUserDetails error");
 					errorMessage.value = "Error when logging in, please try again!";
@@ -356,17 +426,16 @@ var coordinates = [];
 
 //Stop function for continious location
 function stopContinuousListener() {
-    GeoLocation.stopListening();
-
-    var boatId = chosenBoatFormatted.getAt(0).id;
+  GeoLocation.stopListening();
+  var boatId = chosenBoatFormatted.getAt(0).id;
 	
 	var totalKm = calculateTotalDistance(coordinates);
 	var fixedKm = totalKm.toFixed(1);
 	console.log("total: "+totalKm);
-    var coordinatesString = JSON.stringify(coordinates);
-    var idString = JSON.stringify(participantIds);  
-    console.log(coordinatesString);
-    console.log(idString);
+  var coordinatesString = JSON.stringify(coordinates);
+  var idString = JSON.stringify(participantIds);  
+  console.log(coordinatesString);
+  console.log(idString);
 
     
     fetch('http://www.scoctail.com/rowing_club/add_new_trip.php?boatId='+boatId+
@@ -399,14 +468,14 @@ function recordTrip() {
     createParticipantIdList(participantArray, participantIds);
 	if (chosenBoatFormatted.getAt(0).id != 0 && participantIds.length > 1) {
 		if (pastTripActive.value == true) {
-			//savePastTrip();
+			savePastTrip();
 			console.log("past");
 		} else if (pastTripActive.value == false) {
 			console.log("new");
 			router.push("showCurrentTrip");
 			coordinates = [];
-	    	startContinuousListener();
-	    }
+	    startContinuousListener();
+	  }
 	} else {
 		//show alert box
 	}
@@ -419,12 +488,20 @@ GeoLocation.on("changed", function(location) {
 
 });
 
+function reverseDate(str) {
+    var newStr = "";
+    newStr+= str.substring(str.length-4,str.length)+"-"+
+    str.substring(str.length-7,str.length-5)+"-"+str.substring(str.length-10,str.length-8);
+  	return newStr;
+}
+
+
 function savePastTrip() {
-	var date = dateValue.value; //format yyyy-mm-dd
+	var date = reverseDate(dateValue.value);
+	
 	var kms = kilometerValue.value;
 	var boatId = chosenBoatFormatted.getAt(0).id;
 	var idString = JSON.stringify(participantIds);
-	console.log(idString);
 
 	fetch('http://www.scoctail.com/rowing_club/add_past_trip.php?boatId='+boatId+
 			'&km='+kms+'&participants='+idString+'&date='+date, {
@@ -437,7 +514,6 @@ function savePastTrip() {
 					if (status == 400) {
 						console.log("trip already added");
 					} else {
-						//error adding to database
 						console.log("error");
 					}
 				}

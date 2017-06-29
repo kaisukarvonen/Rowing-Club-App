@@ -3,7 +3,7 @@ require_once('/home/scocta5/bin/composer/vendor/autoload.php');
 
 use Zend\Config\Factory;
 
-$userId = $_POST['userId'];
+$tripId = $_POST['tripId'];
 
 $config = Factory::fromFile('config_rowing_club_db.php', true);
 
@@ -16,12 +16,13 @@ $dbname=$config->get("database")->get("dbname");
 try {
   $connection = new PDO("mysql:host=$servername;dbname=$dbname", $dbusername, $dbpassword);
   $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  $stmt_searchUserTrips = $connection->prepare('SELECT SUM(km) as sum_km, DATE_FORMAT(date,"%m") as fdate FROM Trip JOIN User_trip ON Trip.id=User_trip.trip_id AND User_trip.user_id=:userId AND date >= date_sub(now(), interval 4 month) GROUP BY DATE_FORMAT(date,"%m") ORDER BY fdate ASC');
-  $stmt_searchUserTrips->bindParam(':userId', $userId);
-  $stmt_searchUserTrips->execute();
-  $searchResult = $stmt_searchUserTrips->fetchAll();
+  $stmt_searchCoordinates = $connection->prepare('SELECT latitude, longitude FROM Trip_coordinates WHERE trip_id=:tripId');
+  $stmt_searchCoordinates->bindParam(':tripId', $tripId);
+  $stmt_searchCoordinates->execute();
+  $searchResult = $stmt_searchCoordinates->fetchAll();
   
-  $array=json_encode(array('Trips' => $searchResult)); 
+ 
+  $array=json_encode(array('Coordinates' => $searchResult)); 
   echo $array;
    
 } catch (PDOException $e) {

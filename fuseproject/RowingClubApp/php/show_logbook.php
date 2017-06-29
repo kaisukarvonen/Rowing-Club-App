@@ -16,7 +16,8 @@ $dbname=$config->get("database")->get("dbname");
 try {
   $connection = new PDO("mysql:host=$servername;dbname=$dbname", $dbusername, $dbpassword);
   $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  $stmt_searchUserTrips = $connection->prepare('SELECT Trip.id, Trip.km, DATE_FORMAT(Trip.date,"%d.%m.%Y") as fdate, Boat.name as boat_name FROM Trip JOIN User_trip ON Trip.id = User_trip.trip_id AND User_trip.user_id=:userId JOIN Boat ON Trip.boat_id= Boat.id');
+  $stmt_searchUserTrips = $connection->prepare('SELECT Trip.id, Trip.km, DATE_FORMAT(Trip.date,"%d.%m.%Y") as fdate, Boat.name as boat_name FROM Trip
+  JOIN User_trip ON Trip.id = User_trip.trip_id AND User_trip.user_id=:userId JOIN Boat ON Trip.boat_id= Boat.id ORDER BY Trip.date DESC');
   $stmt_searchUserTrips->bindParam(':userId', $userId);
   $stmt_searchUserTrips->execute();
   $searchResult = $stmt_searchUserTrips->fetchAll();

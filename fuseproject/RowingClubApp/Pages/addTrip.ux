@@ -12,7 +12,7 @@
 			        <WhileTrue Value="{ReadProperty pastTripSwitch.Value}">
 			            <DebugAction Message="pastTrip Mode on" />
 			            <Change date.IsEnabled="true" />
-			            <Change date.PlaceholderText="type date..." />
+			            <Change date.PlaceholderText="dd.mm.yyyy" />
 			            <Change date.PlaceholderColor="#aaa" />
 			            <Change dateRectangle.Color="#ccc" />
 			            <Change startTripText.Value="Save trip" />

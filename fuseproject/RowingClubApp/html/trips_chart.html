@@ -14,9 +14,10 @@
 
 <script>
 var trips = [];
+var labels = [];
+//initiatizeArray(trips);
 
 window.onload = function(){ 
-	trips = [];
 	var userId = getUrlParameter();
 	
 	$.post("show_trips_chart.php", {
@@ -25,31 +26,73 @@ window.onload = function(){
 			var parsedtrips = JSON.parse(jsonTrips);
 			var formatted = parsedtrips.Trips;
 			//console.log(parsed);
-			for (var i=0; i<formatted.length; i++) {
-				trips.push({km:formatted[i].sum_km, date:formatted[i].fdate});
+			if (formatted.length != 4) {
+				addZeroMonths(formatted);
+			} else {
+				for (var i=0; i<formatted.length; i++) {
+					trips.push({km:formatted[i].sum_km, month:formatted[i].fdate});
+				}
 			}
-			console.log(trips[0].date);
+			showNamesOfMonths();
 			
 			showChart();
 			
-		}).fail(function(xhr) {
-				//do something
-		})
+		});
  
+}
+
+function showNamesOfMonths() {
+	var monthsNames = ["Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
+	
+	
+	var curDate = new Date();
+	for(var i=4; i>0; i--) {
+		labels.push(monthsNames[curDate.getMonth()-(i-1)]);
+	}
+}
+
+
+function addZeroMonths(jsonArray) {
+	var months = [];
+	var x = 3;
+	for (var i=0; i<4; i++) {
+		var cur = new Date();
+		cur.setMonth(cur.getMonth()+1 - x);
+		months.push("0"+cur.getMonth());
+		x--;
+	}
+	
+	for (var i=0; i<months.length; i++) {
+		var attrPosition = findAttributeFromArray(jsonArray,"fdate",months[i]);
+		if (attrPosition!= -1)  {
+			trips.push({km: jsonArray[attrPosition].sum_km, month:jsonArray[attrPosition].fdate});
+		} else {
+			trips.push({km: 0, month:months[i]});
+		}
+	}
+
+}
+
+function findAttributeFromArray(array, attr, value) {
+    for(var i=0; i<array.length; i++) {
+        if(array[i][attr] === value) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 function getUrlParameter() {
 	var url = window.location.href;
-	userId = url.substring(url.length-1);
-	console.log(userId);
-	return userId;
+	id = url.substring(url.indexOf("=")+1);
+	return id;
 }
 
 
 function showChart() {
 
 	var ctx = document.getElementById('myChart').getContext('2d');
-	ctx.canvas.height = 1000;
+	ctx.canvas.height = 1100;
 	var chart = new Chart(ctx, {
 		// The type of chart we want to create
 		type: 'bar',
@@ -57,9 +100,9 @@ function showChart() {
 		// The data for our dataset
 		
 		data: {
-			labels: [trips[0].date, trips[1].date, trips[2].date, trips[3].date],
+			labels: [labels[0], labels[1], labels[2], labels[3]],
 			datasets: [{
-				label: "Trips past 4 months",
+				label: "Kilometers",
 				backgroundColor: '#25a',
 				borderColor: '#249',
 				data: [trips[0].km, trips[1].km, trips[2].km, trips[3].km]
@@ -68,14 +111,27 @@ function showChart() {
 
 		// Configuration options go here
 		options: {
+			legend: {
+				display:false
+			},
+			tooltips: {
+				titleFontSize:36,
+				bodyFontSize: 33
+			},
 		    responsive: true,
 			maintainAspectRatio: false,
 
 			scales: {
 				xAxes: [{
-					categoryPercentage: 0.8,
-					gridLines: {
-						
+					categoryPercentage: 0.6,
+					ticks: {
+						fontSize: 40
+					}
+				}],
+				yAxes: [{
+					ticks: {
+						fontSize: 46,
+						beginAtZero: true
 					}
 				}]
 			}

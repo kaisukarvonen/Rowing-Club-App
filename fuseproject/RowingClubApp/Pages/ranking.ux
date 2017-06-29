@@ -2,11 +2,14 @@
 	<ScrollView>
 		<StackPanel Layer="Overlay" Margin="40,10,0,0">
 			
-			<Header Margin="-40, 10, 0, 30">Ranking</Header>
+			<Header Margin="-40, 10, 0, 40">Ranking</Header>
 				<StackPanel>
 					<Each Items="{ranking}">
 						<StackPanel>
-							<Text Value="{rank}. {name} -- {km} km" Color="#fff" Margin="0,0,0,30"/>
+						<Panel >
+							<Text Value="{rank}. {name}" Color="#fff" Margin="0,0,0,30"/>
+							<Text Value="{km} km" Color="#fff" Margin="230,0,0,0"/>
+						</Panel>
 					  </StackPanel>
 					</Each>
 				</StackPanel>

@@ -1,13 +1,27 @@
 <Page ux:Class="logbook">
 	<ScrollView>
-		<StackPanel Layer="Overlay" Margin="40,10,0,0">
+		<StackPanel Layer="Overlay" Margin="30,10,0,0">
 			
 			<Header Margin="-40, 10, 0, 30">Logbook</Header>
 				<StackPanel>
 					<Each Items="{trips}">
 						<StackPanel>
-							<Text Value="{date}" Color="#fff"/>
-					    <Text Value="{km} kilometers with {boatName}" Color="#fff" Margin="0,0,0,30"/>
+							<Rectangle ux:Name="itemRectangle" CornerRadius="9" Color="#999" Margin="10,0,50,14" Padding="9" Opacity="0.8">
+								<Clicked>
+									<Callback Handler="{tripClicked}" />
+								</Clicked>
+								<Panel Opacity="1">
+								<Text Value="{date}" Color="#fff" FontSize="12" Alignment="Left" Margin="10,0,0,0"/>
+
+									<Panel>
+						    	<Text Value="{boatName}" Color="#fff" Margin="10,20,0,0"/>
+						    	<Text Value="{km} km" Color="#fff" Margin="140,20,0,1"/>
+						    <WhilePressed>
+						    		<Change itemRectangle.Color="#666" Duration="0.5" DurationBack="0.1"/>
+						    </WhilePressed>
+						    	</Panel>
+						    </Panel>
+						   </Rectangle>
 					  </StackPanel>
 					</Each>
 				</StackPanel>

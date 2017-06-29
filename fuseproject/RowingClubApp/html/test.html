@@ -18,15 +18,11 @@ var trips = [];
 	var ctx = document.getElementById('myChart').getContext('2d');
 	ctx.canvas.height = 1100;
 	var chart = new Chart(ctx, {
-		// The type of chart we want to create
 		type: 'bar',
-
-		// The data for our dataset
-		
 		data: {
-			labels: ['03/2017','04/2017', '05/2017', '06/2017'],
+			labels: ['Jan','Feb', 'Mar', 'Apr'],
 			datasets: [{
-				label: "Trips past 4 months",
+				label: "Kilometers",
 				backgroundColor: '#25a',
 				borderColor: '#249',
 				data: [30, 12, 50, 22]
@@ -35,15 +31,26 @@ var trips = [];
 
 		// Configuration options go here
 		options: {
-
+			legend: {
+				display:false
+			},
+			tooltips: {
+				titleFontSize:36,
+				bodyFontSize: 33
+			},
 		    responsive: true,
 			maintainAspectRatio: false,
 
 			scales: {
 				xAxes: [{
 					categoryPercentage: 0.6,
-					gridLines: {
-						
+					ticks: {
+						fontSize: 40
+					}
+				}],
+				yAxes: [{
+					ticks: {
+						fontSize: 46
 					}
 				}]
 			}

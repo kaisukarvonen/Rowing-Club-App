@@ -1,26 +1,16 @@
 <Page ux:Class="statistics">
 
-		<DockPanel Margin="20,50,20,80">
-			<Header Margin="-40, -40, 0, 30">Statistics</Header>
+		<DockPanel Margin="20,90,20,20">
+			<Header Margin="0, -75, 0, 30">Statistics</Header>
       
+			<Panel Margin="66, -29, 0, 30">
+
+				<Text Value="Trips for past 4 months"  TextColor="#eee" FontSize="18"/>
+			</Panel>
         <NativeViewHost>
             <WebView Url="{statisticsUrl}">
-                <!--<PageLoaded>
-                    <EvaluateJS Handler="{onPageLoaded}">
-                        var result = {
-                            url : document.location.href
-                        };
-                        return result;
-                    </EvaluateJS>
-                </PageLoaded>-->
             </WebView>
         </NativeViewHost>
 	</DockPanel>
-
-			<Panel Margin="0,190,0,0">
-				<Text Value="Login" TextColor="White" Alignment="Center"/>
-				<Rectangle ux:Name="loginRectangle" CornerRadius="4" Layer="Background" Color="#000" Height="40"/>
-			</Panel>
-
 
 </Page>

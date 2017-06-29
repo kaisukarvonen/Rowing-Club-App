@@ -1,4 +1,5 @@
 <Page ux:Class="info">
+
 	<ScrollView>
 		<StackPanel Layer="Overlay">
 			<Header Margin="0, 10, 0, 10">Info</Header>
